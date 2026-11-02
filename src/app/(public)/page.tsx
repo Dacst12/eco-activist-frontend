@@ -1,9 +1,22 @@
-import { EventCard } from '@/entities/event'
+import {
+  getDistricts,
+  getEventTypes,
+  getOrganizerOptions,
+} from '@/entities/dictionary/api/server'
+import { EventCard, parseEventFilters } from '@/entities/event'
 import { getEvents } from '@/entities/event/api/server'
+import { EventFilters } from '@/features/event-filters'
 import { plural } from '@/shared/lib/plural'
 
-export default async function CatalogPage() {
-  const events = await getEvents()
+export default async function CatalogPage({ searchParams }: PageProps<'/'>) {
+  const filters = parseEventFilters(await searchParams)
+
+  const [events, types, districts, organizers] = await Promise.all([
+    getEvents(filters),
+    getEventTypes(),
+    getDistricts(),
+    getOrganizerOptions(),
+  ])
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-12">
@@ -12,7 +25,14 @@ export default async function CatalogPage() {
         Выберите экологическое дело и присоединитесь к команде.
       </p>
 
-      <h2 className="text-subtitle mt-12 font-semibold">
+      <EventFilters
+        filters={filters}
+        types={types}
+        districts={districts}
+        organizers={organizers}
+      />
+
+      <h2 className="text-subtitle mt-6 font-semibold">
         Найдено {events.length}{' '}
         {plural(events.length, ['мероприятие', 'мероприятия', 'мероприятий'])}
       </h2>

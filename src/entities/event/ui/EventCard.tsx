@@ -1,6 +1,6 @@
 import { formatEventDate } from '@/shared/lib/date'
 import { plural } from '@/shared/lib/plural'
-import { getFreeSeats, isFull } from '../model/seats'
+import { getFreeSeats, isFull } from '../lib/seats'
 import type { EventSummary } from '../model/types'
 
 export function EventCard({ event }: { event: EventSummary }) {

@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ru" className={manrope.variable}>
-      <body className="bg-page text-foreground font-sans antialiased">
+    <html lang="ru" className={`${manrope.variable} flex h-full flex-col`}>
+      <body className="bg-page text-foreground flex h-full flex-col font-sans antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,4 +1,4 @@
-import type { EventSummary } from './types'
+import type { EventSummary } from '../model/types'
 
 export const getFreeSeats = (event: EventSummary) =>
   Math.max(event.capacity - event.registeredCount, 0)

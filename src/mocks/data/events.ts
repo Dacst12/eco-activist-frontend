@@ -1,26 +1,7 @@
 import type { EventDetails } from '@/entities/event'
+import { districts, eventTypes as types, organizers } from './dictionaries'
 
 const CENTER = { lat: 56.8333, lng: 60.5833 }
-
-const types = [
-  { id: '1', name: 'Субботник' },
-  { id: '2', name: 'Сбор вторсырья' },
-  { id: '3', name: 'Посадка деревьев' },
-  { id: '4', name: 'Экоквест' },
-  { id: '5', name: 'Лекция' },
-]
-
-const districts = [
-  { id: '1', name: 'Центральный' },
-  { id: '2', name: 'Северный' },
-  { id: '3', name: 'Южный' },
-]
-
-const organizers = [
-  { id: '1', name: 'Зелёный город' },
-  { id: '2', name: 'Эковолонтёры вуза' },
-  { id: '3', name: 'Чистый берег' },
-]
 
 const titles = [
   'Уборка набережной',

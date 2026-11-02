@@ -35,3 +35,18 @@
   --radius-control: 0.5rem;
   --radius-card: 0.75rem;
 }
+
+:root .rdp-root {
+  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-background-color: var(--color-success-soft);
+  --rdp-today-color: var(--color-primary);
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+}
