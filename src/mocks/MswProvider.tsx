@@ -1,18 +1,17 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import dynamic from 'next/dynamic'
+import type { ReactNode } from 'react'
 
 const enabled = process.env.NEXT_PUBLIC_USE_MOCKS === 'true'
 
+const MswWorker = dynamic(() => import('./MswWorker'), { ssr: false })
+
 export function MswProvider({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(!enabled)
-
-  useEffect(() => {
-    if (!enabled) return
-    import('./browser')
-      .then(({ worker }) => worker.start({ onUnhandledFrame: 'bypass' }))
-      .then(() => setReady(true))
-  }, [])
-
-  return ready ? children : null
+  return (
+    <>
+      {enabled && <MswWorker />}
+      {children}
+    </>
+  )
 }
