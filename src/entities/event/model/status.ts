@@ -1,10 +1,9 @@
+import type { BadgeTone } from '@/shared/ui'
 import type { EventStatus } from './types'
-
-export type StatusTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger'
 
 export const eventStatusConfig: Record<
   EventStatus,
-  { label: string; tone: StatusTone }
+  { label: string; tone: BadgeTone }
 > = {
   draft: { label: 'Черновик', tone: 'neutral' },
   moderation: { label: 'На модерации', tone: 'warning' },

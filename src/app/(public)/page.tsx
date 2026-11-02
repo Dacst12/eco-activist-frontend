@@ -1,5 +1,5 @@
+import { EventCard } from '@/entities/event'
 import { getEvents } from '@/entities/event/api/server'
-import { formatEventDate } from '@/shared/lib/date'
 import { plural } from '@/shared/lib/plural'
 
 export default async function CatalogPage() {
@@ -20,16 +20,10 @@ export default async function CatalogPage() {
       {events.length === 0 ? (
         <p className="text-muted mt-4">По выбранным условиям мероприятий нет</p>
       ) : (
-        <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
-            <li
-              key={event.id}
-              className="border-line bg-surface rounded-card border p-6"
-            >
-              <p className="font-semibold">{event.title}</p>
-              <p className="text-foreground mt-2 text-sm">
-                {formatEventDate(event.startsAt, event.endsAt)}
-              </p>
+            <li key={event.id}>
+              <EventCard event={event} />
             </li>
           ))}
         </ul>
