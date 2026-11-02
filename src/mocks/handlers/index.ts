@@ -1,3 +1,3 @@
-import { http, HttpResponse } from 'msw'
+import { eventHandlers } from './events'
 
-export const handlers = [http.get('*/events', () => HttpResponse.json([]))]
+export const handlers = [...eventHandlers]
