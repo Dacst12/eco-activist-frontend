@@ -3,7 +3,7 @@ import { toCityDateKey } from '@/shared/lib/date'
 import { events, toSummary } from '../data/events'
 
 export const eventHandlers = [
-  http.get('*/events', ({ request }) => {
+  http.get('*/api/events', ({ request }) => {
     const params = new URL(request.url).searchParams
     const type = params.get('type')
     const district = params.get('district')
@@ -27,7 +27,7 @@ export const eventHandlers = [
     return HttpResponse.json(result.map(toSummary))
   }),
 
-  http.get('*/events/:id', ({ params }) => {
+  http.get('*/api/events/:id', ({ params }) => {
     const event = events.find((e) => e.id === params.id)
     return event
       ? HttpResponse.json(event)

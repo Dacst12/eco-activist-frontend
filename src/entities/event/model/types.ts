@@ -25,4 +25,8 @@ export type EventDetails = EventSummary & {
   description: string
   inventory: string[]
   organizerContacts: string
+  meetingPoint?: string
+  confirmedCount: number
+  pendingCount: number
+  registrationEndsAt: string
 }

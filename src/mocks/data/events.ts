@@ -33,6 +33,9 @@ export const events: EventDetails[] = titles.map((title, i) => {
   const startsAt = new Date(Date.now() + (i + 1) * day)
   startsAt.setHours(10 + (i % 4) * 2, 0, 0, 0)
   const capacity = [10, 20, 30, 15][i % 4]
+  const registeredCount =
+    i % 5 === 0 ? capacity : Math.floor(capacity / (2 + (i % 3)))
+  const pendingCount = Math.min(registeredCount, i % 4)
 
   return {
     id: String(i + 1),
@@ -48,8 +51,11 @@ export const events: EventDetails[] = titles.map((title, i) => {
       lng: CENTER.lng + Math.cos(i * 1.7) * 0.05,
     },
     capacity,
-    registeredCount:
-      i % 5 === 0 ? capacity : Math.floor(capacity / (2 + (i % 3))),
+    registeredCount,
+    confirmedCount: registeredCount - pendingCount,
+    pendingCount,
+    registrationEndsAt: new Date(startsAt.getTime() - day).toISOString(),
+    meetingPoint: i % 2 === 0 ? 'У главного входа' : undefined,
     points: pointsByType[type.id],
     status: 'published',
     description: `Присоединяйтесь к мероприятию «${title}». Подробности уточняйте у организатора.`,
@@ -62,5 +68,9 @@ export const toSummary = ({
   description,
   inventory,
   organizerContacts,
+  meetingPoint,
+  confirmedCount,
+  pendingCount,
+  registrationEndsAt,
   ...summary
 }: EventDetails) => summary

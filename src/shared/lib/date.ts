@@ -53,3 +53,8 @@ export const formatDateRange = (range?: { from?: Date; to?: Date }) => {
   if (toLocalDateKey(range.from) === toLocalDateKey(range.to)) return from
   return `${from} – ${dayMonthFormat.format(range.to)}`
 }
+
+export const formatDateTime = (iso: string) => {
+  const date = new Date(iso)
+  return `${dayFormat.format(date)}, ${timeFormat.format(date)}`
+}

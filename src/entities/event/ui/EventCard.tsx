@@ -2,6 +2,8 @@ import { formatEventDate } from '@/shared/lib/date'
 import { plural } from '@/shared/lib/plural'
 import { getFreeSeats, isFull } from '../lib/seats'
 import type { EventSummary } from '../model/types'
+import Link from 'next/link'
+import type { Route } from 'next'
 
 export function EventCard({ event }: { event: EventSummary }) {
   const freeSeats = getFreeSeats(event)
@@ -29,7 +31,10 @@ export function EventCard({ event }: { event: EventSummary }) {
             {event.capacity}
           </span>
         )}
-        <span className="text-primary"> · Подробнее →</span>
+        <span> · </span>
+        <Link href={`/events/${event.id}` as Route} className="text-primary">
+          Подробнее →
+        </Link>
       </p>
     </article>
   )
