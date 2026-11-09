@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Manrope } from 'next/font/google'
 import { Providers } from './providers'
 import './globals.css'
+import { Header } from '@/widgets/header'
 
 const manrope = Manrope({
   subsets: ['latin', 'cyrillic'],
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${manrope.variable} flex h-full flex-col`}>
       <body className="bg-page text-foreground flex h-full flex-col font-sans antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   )

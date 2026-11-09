@@ -9,6 +9,7 @@ import {
 import { plural } from '@/shared/lib/plural'
 import { EventsList } from '@/widgets/events-list'
 import { EventsMap } from '@/widgets/events-map'
+import { NewcomerBanner } from '@/widgets/newcomer-banner'
 
 export default async function CatalogPage({ searchParams }: PageProps<'/'>) {
   const params = await searchParams
@@ -53,6 +54,8 @@ export default async function CatalogPage({ searchParams }: PageProps<'/'>) {
       ) : (
         <EventsList events={events} />
       )}
+
+      <NewcomerBanner className="mt-8" />
     </main>
   )
 }
