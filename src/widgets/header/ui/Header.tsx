@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { routes } from '@/shared/config/routes'
 import { MainNav } from './MainNav'
+import { HeaderAuth } from './HeaderAuth'
 
 export function Header() {
   return (
@@ -14,12 +15,9 @@ export function Header() {
         </Link>
         <MainNav className="order-last w-full md:order-0 md:w-auto md:flex-1" />
 
-        <Link
-          href={routes.login}
-          className="text-primary ml-auto font-semibold md:ml-0"
-        >
-          Войти
-        </Link>
+        <div className="ml-auto md:ml-0">
+          <HeaderAuth />
+        </div>
       </div>
     </header>
   )
