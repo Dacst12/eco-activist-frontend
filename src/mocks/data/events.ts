@@ -1,7 +1,9 @@
 import type { EventDetails } from '@/entities/event'
 import { districts, eventTypes as types, organizers } from './dictionaries'
+import { CITY_CENTER as CENTER } from '@/shared/config/map'
+import { createOffset, createRandom } from '../lib/random'
 
-const CENTER = { lat: 56.8333, lng: 60.5833 }
+const randomOffset = createOffset(createRandom(42))
 
 const titles = [
   'Уборка набережной',
@@ -47,8 +49,8 @@ export const events: EventDetails[] = titles.map((title, i) => {
     endsAt: new Date(startsAt.getTime() + 3 * 60 * 60 * 1000).toISOString(),
     address: `ул. Тестовая, ${i + 1}`,
     location: {
-      lat: CENTER.lat + Math.sin(i * 1.7) * 0.03,
-      lng: CENTER.lng + Math.cos(i * 1.7) * 0.05,
+      lat: CENTER.lat + randomOffset(0.035),
+      lng: CENTER.lng + randomOffset(0.06),
     },
     capacity,
     registeredCount,

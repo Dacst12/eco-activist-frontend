@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   availabilityConfig,
+  EventLocationMap,
   EventSeatsSummary,
   getEventAvailability,
 } from '@/entities/event'
@@ -61,6 +62,7 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
               {event.meetingPoint && `Точка сбора: ${event.meetingPoint}. `}
               Время: {CITY_TIMEZONE_LABEL}.
             </p>
+            <EventLocationMap location={event.location} className="mt-4 h-64" />
           </section>
 
           <section className={cardClass}>

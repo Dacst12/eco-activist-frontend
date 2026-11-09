@@ -5,7 +5,9 @@ import type { EventSummary } from '../model/types'
 import Link from 'next/link'
 import type { Route } from 'next'
 
-export function EventCard({ event }: { event: EventSummary }) {
+type EventCardProps = { event: EventSummary; className?: string }
+
+export function EventCard({ event }: EventCardProps) {
   const freeSeats = getFreeSeats(event)
 
   return (

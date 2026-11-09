@@ -5,11 +5,14 @@ import {
 } from '@/entities/dictionary/api/server'
 import { EventCard, parseEventFilters } from '@/entities/event'
 import { getEvents } from '@/entities/event/api/server'
-import { EventFilters } from '@/features/event-filters'
+import { EventFilters, parseCatalogView } from '@/features/event-filters'
 import { plural } from '@/shared/lib/plural'
+import { EventsMap } from '@/widgets/events-map'
 
 export default async function CatalogPage({ searchParams }: PageProps<'/'>) {
-  const filters = parseEventFilters(await searchParams)
+  const params = await searchParams
+  const filters = parseEventFilters(params)
+  const view = parseCatalogView(params.view)
 
   const [events, types, districts, organizers] = await Promise.all([
     getEvents(filters),
@@ -27,6 +30,7 @@ export default async function CatalogPage({ searchParams }: PageProps<'/'>) {
 
       <EventFilters
         filters={filters}
+        view={view}
         types={types}
         districts={districts}
         organizers={organizers}
@@ -39,6 +43,8 @@ export default async function CatalogPage({ searchParams }: PageProps<'/'>) {
 
       {events.length === 0 ? (
         <p className="text-muted mt-4">По выбранным условиям мероприятий нет</p>
+      ) : view === 'map' ? (
+        <EventsMap events={events} className="mt-4 h-128" />
       ) : (
         <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (

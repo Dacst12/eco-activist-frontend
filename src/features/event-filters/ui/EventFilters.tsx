@@ -3,9 +3,12 @@ import Link from 'next/link'
 import type { DictionaryItem } from '@/entities/dictionary'
 import type { EventFilters as Filters } from '@/entities/event'
 import { Button, buttonClass, DateRangeField, Field, Select } from '@/shared/ui'
+import { CatalogView } from '../lib/view'
+import { toQueryString } from '@/shared/lib/url'
 
 type EventFiltersProps = {
   filters: Filters
+  view: CatalogView
   types: DictionaryItem[]
   districts: DictionaryItem[]
   organizers: DictionaryItem[]
@@ -19,8 +22,17 @@ function Options({ items }: { items: DictionaryItem[] }) {
   ))
 }
 
+const catalogHref = (filters: Filters, view: CatalogView) => {
+  const query = toQueryString({
+    ...filters,
+    view: view === 'map' ? 'map' : undefined,
+  })
+  return query ? (`/?${query}` as const) : ('/' as const)
+}
+
 export function EventFilters({
   filters,
+  view,
   types,
   districts,
   organizers,
@@ -75,16 +87,35 @@ export function EventFilters({
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            name="seats"
-            value="1"
-            defaultChecked={filters.seats === '1'}
-            className="accent-primary size-4"
-          />
-          Только со свободными местами
-        </label>
+        <div className="flex flex-wrap items-center gap-4">
+          <nav aria-label="Вид каталога" className="flex gap-2">
+            <Link
+              href={catalogHref(filters, 'list')}
+              aria-current={view === 'list' ? 'page' : undefined}
+              className={buttonClass(view === 'list' ? 'primary' : 'secondary')}
+            >
+              Список
+            </Link>
+            <Link
+              href={catalogHref(filters, 'map')}
+              aria-current={view === 'map' ? 'page' : undefined}
+              className={buttonClass(view === 'map' ? 'primary' : 'secondary')}
+            >
+              На карте
+            </Link>
+          </nav>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="seats"
+              value="1"
+              defaultChecked={filters.seats === '1'}
+              className="accent-primary size-4"
+            />
+            Только со свободными местами
+          </label>
+        </div>
 
         <div className="flex gap-4">
           <Link href="/" className={buttonClass('secondary')}>

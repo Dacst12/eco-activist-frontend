@@ -22,9 +22,10 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettier,
-  layerRule(['app', 'features', 'entities'], 'shared'),
-  layerRule(['app', 'features'], 'entities'),
-  layerRule(['app'], 'features'),
+  layerRule(['app', 'widgets', 'features', 'entities'], 'shared'),
+  layerRule(['app', 'widgets', 'features'], 'entities'),
+  layerRule(['app', 'widgets'], 'features'),
+  layerRule(['app'], 'widgets'),
   globalIgnores([
     '.next/**',
     'out/**',

@@ -4,6 +4,6 @@ export async function register() {
     process.env.NEXT_PUBLIC_USE_MOCKS === 'true'
   ) {
     const { server } = await import('./mocks/node')
-    server.listen({ onUnhandledFrame: 'bypass' })
+    server.listen({ onUnhandledFrame: 'warn' })
   }
 }
