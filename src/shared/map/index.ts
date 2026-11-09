@@ -1,3 +1,3 @@
-export type { LatLng, MapPoint } from './types'
+export type { LatLng, MapPoint, MapView } from './types'
 export { ClusteredMap } from './ClusteredMap'
 export { PointMap } from './PointMap'

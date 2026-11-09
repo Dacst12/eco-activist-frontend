@@ -33,7 +33,7 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
   const { action, badge, tone } = availabilityConfig[availability]
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-12">
+    <main className="mx-auto w-full max-w-7xl px-4 py-12">
       <header>
         <h1 className="text-title font-semibold">{event.title}</h1>
         <nav aria-label="Навигация" className="text-muted mt-2">

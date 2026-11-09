@@ -3,15 +3,14 @@ import Link from 'next/link'
 import type { DictionaryItem } from '@/entities/dictionary'
 import type { EventFilters as Filters } from '@/entities/event'
 import { Button, buttonClass, DateRangeField, Field, Select } from '@/shared/ui'
-import { CatalogView } from '../lib/view'
-import { toQueryString } from '@/shared/lib/url'
+import { catalogHref, CatalogView } from '../lib/view'
+import { ViewSwitch } from './ViewSwitch'
 
 type EventFiltersProps = {
   filters: Filters
   view: CatalogView
   types: DictionaryItem[]
   districts: DictionaryItem[]
-  organizers: DictionaryItem[]
 }
 
 function Options({ items }: { items: DictionaryItem[] }) {
@@ -22,20 +21,11 @@ function Options({ items }: { items: DictionaryItem[] }) {
   ))
 }
 
-const catalogHref = (filters: Filters, view: CatalogView) => {
-  const query = toQueryString({
-    ...filters,
-    view: view === 'map' ? 'map' : undefined,
-  })
-  return query ? (`/?${query}` as const) : ('/' as const)
-}
-
 export function EventFilters({
   filters,
   view,
   types,
   districts,
-  organizers,
 }: EventFiltersProps) {
   return (
     <Form
@@ -43,7 +33,8 @@ export function EventFilters({
       key={JSON.stringify(filters)}
       className="mt-6 flex flex-col gap-4"
     >
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {view === 'map' && <input type="hidden" name="view" value="map" />}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Field label="Район">
           <Select
             name="district"
@@ -73,52 +64,16 @@ export function EventFilters({
             <Options items={types} />
           </Select>
         </Field>
-
-        <Field label="Организатор">
-          <Select
-            name="organizer"
-            aria-label="Организатор"
-            defaultValue={filters.organizer ?? ''}
-          >
-            <option value="">Все организаторы</option>
-            <Options items={organizers} />
-          </Select>
-        </Field>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <nav aria-label="Вид каталога" className="flex gap-2">
-            <Link
-              href={catalogHref(filters, 'list')}
-              aria-current={view === 'list' ? 'page' : undefined}
-              className={buttonClass(view === 'list' ? 'primary' : 'secondary')}
-            >
-              Список
-            </Link>
-            <Link
-              href={catalogHref(filters, 'map')}
-              aria-current={view === 'map' ? 'page' : undefined}
-              className={buttonClass(view === 'map' ? 'primary' : 'secondary')}
-            >
-              На карте
-            </Link>
-          </nav>
-
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="seats"
-              value="1"
-              defaultChecked={filters.seats === '1'}
-              className="accent-primary size-4"
-            />
-            Только со свободными местами
-          </label>
-        </div>
+        <ViewSwitch filters={filters} view={view} />
 
         <div className="flex gap-4">
-          <Link href="/" className={buttonClass('secondary')}>
+          <Link
+            href={catalogHref({}, view)}
+            className={buttonClass('secondary')}
+          >
             Сбросить фильтры
           </Link>
           <Button type="submit">Найти</Button>

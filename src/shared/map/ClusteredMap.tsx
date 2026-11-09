@@ -4,16 +4,15 @@ import type { LngLat, YMapLocationRequest } from '@yandex/ymaps3-types'
 import type { Feature } from '@yandex/ymaps3-clusterer'
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { cn } from '@/shared/lib/cn'
-import { getBounds, toLngLat } from './coordinates'
+import { getBounds, toLngLat, toLocation } from './coordinates'
 import type { YandexMaps } from './loader'
 import { MapStatus } from './MapStatus'
-import type { LatLng, MapPoint } from './types'
+import type { MapPoint, MapView } from './types'
 import { useYandexMaps } from './useYandexMaps'
 
 type ClusteredMapProps = {
   points: MapPoint[]
-  center: LatLng
-  zoom: number
+  initialView: MapView
   renderMarker: (id: string) => ReactNode
   className?: string
 }
@@ -34,8 +33,7 @@ export function ClusteredMap({ className, ...props }: ClusteredMapProps) {
 function MapContent({
   maps,
   points,
-  center,
-  zoom,
+  initialView,
   renderMarker,
   className,
 }: ClusteredMapProps & { maps: YandexMaps }) {
@@ -48,10 +46,9 @@ function MapContent({
     clusterByGrid,
   } = maps
 
-  const [location, setLocation] = useState<YMapLocationRequest>({
-    center: toLngLat(center),
-    zoom,
-  })
+  const [location, setLocation] = useState<YMapLocationRequest>(() =>
+    toLocation(initialView)
+  )
 
   const features = useMemo<Feature[]>(
     () =>

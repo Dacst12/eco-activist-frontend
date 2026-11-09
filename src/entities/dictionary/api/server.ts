@@ -13,8 +13,3 @@ export const getDistricts = () =>
   serverApi<DictionaryItem[]>('/dictionaries/districts', {
     revalidate: DICTIONARY_REVALIDATE,
   })
-
-export const getOrganizerOptions = () =>
-  serverApi<DictionaryItem[]>('/organizers', {
-    revalidate: DICTIONARY_REVALIDATE,
-  })

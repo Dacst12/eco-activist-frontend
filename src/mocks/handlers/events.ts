@@ -7,22 +7,24 @@ export const eventHandlers = [
     const params = new URL(request.url).searchParams
     const type = params.get('type')
     const district = params.get('district')
-    const organizer = params.get('organizer')
     const from = params.get('from')
     const to = params.get('to')
-    const seats = params.get('seats')
 
-    const result = events.filter((event) => {
-      const date = toCityDateKey(event.startsAt)
-      return (
-        (!type || event.type.id === type) &&
-        (!district || event.district.id === district) &&
-        (!organizer || event.organizer.id === organizer) &&
-        (!from || date >= from) &&
-        (!to || date <= to) &&
-        (!seats || event.registeredCount < event.capacity)
+    const result = events
+      .filter((event) => {
+        const date = toCityDateKey(event.startsAt)
+        return (
+          (!type || event.type.id === type) &&
+          (!district || event.district.id === district) &&
+          (!from || date >= from) &&
+          (!to || date <= to)
+        )
+      })
+
+      .sort(
+        (a, b) =>
+          new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()
       )
-    })
 
     return HttpResponse.json(result.map(toSummary))
   }),
