@@ -1,3 +1,6 @@
 export { useLogout } from './model/useLogout'
 export { LoginForm } from './ui/LoginForm'
+export { RegisterForm } from './ui/RegisterForm'
 export { getSafeNext } from './lib/next'
+export { parseRegisterRole, registerHref, type RegisterRole } from './lib/role'
+export { OrganizerPending } from './ui/OrganizerPending'

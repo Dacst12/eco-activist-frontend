@@ -3,20 +3,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Route } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSession } from '@/entities/user'
 import { routes } from '@/shared/config/routes'
 import { applyServerErrors } from '@/shared/lib/form'
 import { Button, FormError, PasswordField, TextField } from '@/shared/ui'
 import { loginSchema } from '../model/loginSchema'
 import { useLogin } from '../model/useLogin'
+import { useRedirectIfAuthenticated } from '../model/useRedirectIfAuthenticated'
 
 export function LoginForm({ next }: { next: Route }) {
-  const router = useRouter()
-  const { data: user } = useSession()
   const login = useLogin(next)
+  useRedirectIfAuthenticated(next)
 
   const {
     register,
@@ -27,10 +24,6 @@ export function LoginForm({ next }: { next: Route }) {
     resolver: zodResolver(loginSchema),
     defaultValues: { login: '', password: '' },
   })
-
-  useEffect(() => {
-    if (user) router.replace(next)
-  }, [user, next, router])
 
   const onSubmit = handleSubmit(async (values) => {
     try {
