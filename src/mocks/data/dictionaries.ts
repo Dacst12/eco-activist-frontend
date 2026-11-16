@@ -9,9 +9,13 @@ export const eventTypes: DictionaryItem[] = [
 ]
 
 export const districts: DictionaryItem[] = [
-  { id: '1', name: 'Центральный' },
-  { id: '2', name: 'Северный' },
-  { id: '3', name: 'Южный' },
+  { id: '1', name: 'Верх-Исетский' },
+  { id: '2', name: 'Железнодорожный' },
+  { id: '3', name: 'Кировский' },
+  { id: '4', name: 'Ленинский' },
+  { id: '5', name: 'Октябрьский' },
+  { id: '6', name: 'Орджоникидзевский' },
+  { id: '7', name: 'Чкаловский' },
 ]
 
 export const organizers: DictionaryItem[] = [

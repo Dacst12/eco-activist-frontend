@@ -4,13 +4,19 @@ import { buttonClass } from '@/shared/ui'
 import { toEventInput } from '../lib/form'
 import type { EventFormOutput } from '../model/eventSchema'
 import { EventForm } from './EventForm'
+import { DictionaryItem } from '@/entities/dictionary'
 
 type NewEventFormProps = {
-  types: { id: string; name: string }[]
+  types: DictionaryItem[]
+  districts: DictionaryItem[]
   className?: string
 }
 
-export function NewEventForm({ types, className }: NewEventFormProps) {
+export function NewEventForm({
+  types,
+  className,
+  districts,
+}: NewEventFormProps) {
   const handleSubmit = (
     values: EventFormOutput,
     intent: string | undefined
@@ -19,7 +25,12 @@ export function NewEventForm({ types, className }: NewEventFormProps) {
   }
 
   return (
-    <EventForm types={types} onSubmit={handleSubmit} className={className}>
+    <EventForm
+      types={types}
+      districts={districts}
+      onSubmit={handleSubmit}
+      className={className}
+    >
       <button
         type="submit"
         name="intent"

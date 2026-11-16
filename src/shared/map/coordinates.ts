@@ -9,6 +9,8 @@ const SINGLE_POINT_ZOOM = 15
 
 export const toLngLat = ({ lat, lng }: LatLng): LngLat => [lng, lat]
 
+export const fromLngLat = ([lng, lat]: LngLat): LatLng => ({ lat, lng })
+
 export const getBounds = (points: LngLat[]): LngLatBounds => {
   const lngs = points.map(([lng]) => lng)
   const lats = points.map(([, lat]) => lat)

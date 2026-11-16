@@ -11,9 +11,12 @@ import {
   type EventFormValues,
 } from '../model/eventSchema'
 import { EventMainFields } from './EventMainFields'
+import { EventPlaceFields } from './EventPlaceFields'
+import { DictionaryItem } from '@/entities/dictionary'
 
 type EventFormProps = {
-  types: { id: string; name: string }[]
+  types: DictionaryItem[]
+  districts: DictionaryItem[]
   defaultValues?: EventFormValues
   occupied?: number
   onSubmit: (
@@ -26,6 +29,7 @@ type EventFormProps = {
 
 export function EventForm({
   types,
+  districts,
   defaultValues = emptyEventForm,
   occupied = 0,
   onSubmit,
@@ -53,6 +57,7 @@ export function EventForm({
       <form noValidate onSubmit={submit} className={className}>
         <div className="grid items-start gap-6 lg:grid-cols-2">
           <EventMainFields types={types} />
+          <EventPlaceFields districts={districts} />
         </div>
 
         <div className={cn('mt-6 flex flex-wrap gap-4')}>{children}</div>

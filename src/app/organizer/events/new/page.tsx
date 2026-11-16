@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 import { NewEventForm } from '@/features/event-editor'
-import { getEventTypes } from '@/entities/dictionary/api/server'
+import { getDistricts, getEventTypes } from '@/entities/dictionary/api/server'
 
 export const metadata: Metadata = { title: 'Новое мероприятие — Эко Активист' }
 
 export default async function NewEventPage() {
-  const types = await getEventTypes()
+  const [types, districts] = await Promise.all([
+    getEventTypes(),
+    getDistricts(),
+  ])
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-12">
@@ -14,7 +17,7 @@ export default async function NewEventPage() {
         Черновик · сведения можно уточнить до публикации
       </p>
 
-      <NewEventForm types={types} className="mt-6" />
+      <NewEventForm types={types} districts={districts} className="mt-6" />
     </main>
   )
 }
