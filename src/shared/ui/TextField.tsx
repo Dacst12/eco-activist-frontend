@@ -1,6 +1,7 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
 import { cn } from '@/shared/lib/cn'
 import { inputClass } from './Field'
+import { FieldFrame, fieldControlProps } from './FieldFrame'
 
 type TextFieldProps = ComponentProps<'input'> & {
   label: string
@@ -20,20 +21,18 @@ export function TextField({
 }: TextFieldProps) {
   const autoId = useId()
   const inputId = id ?? autoId
-  const messageId = `${inputId}-message`
-  const message = error ?? hint
 
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
-      <label htmlFor={inputId} className="text-muted text-sm">
-        {label}
-      </label>
-
+    <FieldFrame
+      label={label}
+      inputId={inputId}
+      error={error}
+      hint={hint}
+      className={className}
+    >
       <div className="relative">
         <input
-          id={inputId}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={message ? messageId : undefined}
+          {...fieldControlProps(inputId, error, hint)}
           className={cn(
             inputClass,
             error && 'border-danger focus:ring-danger',
@@ -47,15 +46,6 @@ export function TextField({
           </div>
         )}
       </div>
-
-      {message && (
-        <p
-          id={messageId}
-          className={cn('text-sm', error ? 'text-danger-text' : 'text-muted')}
-        >
-          {message}
-        </p>
-      )}
-    </div>
+    </FieldFrame>
   )
 }

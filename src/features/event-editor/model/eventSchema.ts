@@ -25,10 +25,12 @@ export function createEventSchema(occupied = 0) {
       endsAt: z
         .string()
         .regex(CITY_DATE_TIME, 'Укажите дату и время окончания'),
-      registrationEndsAt: z.union([
-        z.literal(''),
-        z.string().regex(CITY_DATE_TIME),
-      ]),
+      registrationEndsAt: z
+        .string()
+        .refine(
+          (value) => value === '' || CITY_DATE_TIME.test(value),
+          'Введите дату и время полностью'
+        ),
       address: requiredString('Укажите адрес').max(
         300,
         'Не длиннее 300 символов'

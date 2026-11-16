@@ -1,10 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { roleLabel, type User } from '@/entities/user'
 import { useLogout } from '@/features/auth'
 import { getUserLinks } from '../lib/userLinks'
+import { useDismiss } from '@/shared/lib/useDismiss'
 
 export function UserMenu({ user }: { user: User }) {
   const [open, setOpen] = useState(false)
@@ -13,24 +14,7 @@ export function UserMenu({ user }: { user: User }) {
   const logout = useLogout()
   const links = getUserLinks(user)
 
-  // Пока меню открыто, слушаем нажатия мимо него и Esc
-  useEffect(() => {
-    if (!open) return
-
-    const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
-    }
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [open])
+  useDismiss(rootRef, open, () => setOpen(false))
 
   return (
     <div ref={rootRef} className="relative">

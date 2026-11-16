@@ -1,8 +1,8 @@
-import type { SelectHTMLAttributes } from 'react'
+import type { ComponentProps } from 'react'
 import { cn } from '@/shared/lib/cn'
 import { inputClass } from './Field'
 
-type SelectProps = SelectHTMLAttributes<HTMLSelectElement>
+type SelectProps = ComponentProps<'select'>
 
 export function Select({ className, children, ...props }: SelectProps) {
   return (

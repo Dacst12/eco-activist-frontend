@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { DayPicker, type DateRange } from 'react-day-picker'
 import { ru } from 'react-day-picker/locale'
 import 'react-day-picker/style.css'
@@ -11,6 +11,7 @@ import {
   toLocalDateKey,
 } from '@/shared/lib/date'
 import { inputClass } from './Field'
+import { useDismiss } from '../lib/useDismiss'
 
 type DateRangeFieldProps = {
   fromName?: string
@@ -38,21 +39,7 @@ export function DateRangeField({
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!open) return
-    const onPointerDown = (e: PointerEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setOpen(false)
-    }
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
-    }
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKeyDown)
-    }
-  }, [open])
+  useDismiss(rootRef, open, () => setOpen(false))
 
   const handleSelect = (next?: DateRange) => {
     setRange(next)
