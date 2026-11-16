@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
 import { formatEventDate } from '@/shared/lib/date'
 import type { EventDetails } from '../model/types'
 import { EventLocationMap } from './EventLocationMap'

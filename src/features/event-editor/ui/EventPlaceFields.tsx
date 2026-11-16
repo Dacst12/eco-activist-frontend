@@ -6,11 +6,15 @@ import { TextareaField, TextField } from '@/shared/ui'
 import type { EventFormOutput, EventFormValues } from '../model/eventSchema'
 import { LocationField } from './LocationField'
 
+type EventPlaceFieldsProps = {
+  districts: DictionaryItem[]
+  capacityHint?: string
+}
+
 export function EventPlaceFields({
   districts,
-}: {
-  districts: DictionaryItem[]
-}) {
+  capacityHint,
+}: EventPlaceFieldsProps) {
   const {
     register,
     formState: { errors },
@@ -39,6 +43,7 @@ export function EventPlaceFields({
         label="Лимит участников *"
         inputMode="numeric"
         placeholder="30"
+        hint={capacityHint}
         error={errors.capacity?.message}
         {...register('capacity')}
       />

@@ -20,6 +20,7 @@ type EventFormProps = {
   districts: DictionaryItem[]
   defaultValues?: EventFormValues
   occupied?: number
+  capacityHint?: string
   onSubmit: (
     values: EventFormOutput,
     intent: string | undefined
@@ -33,6 +34,7 @@ export function EventForm({
   districts,
   defaultValues = emptyEventForm,
   occupied = 0,
+  capacityHint,
   onSubmit,
   children,
   className,
@@ -62,7 +64,7 @@ export function EventForm({
       <form noValidate onSubmit={submit} className={className}>
         <div className="grid items-start gap-6 lg:grid-cols-2">
           <EventMainFields types={types} />
-          <EventPlaceFields districts={districts} />
+          <EventPlaceFields districts={districts} capacityHint={capacityHint} />
         </div>
 
         <FormError

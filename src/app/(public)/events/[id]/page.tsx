@@ -10,6 +10,7 @@ import { JoinEventButton } from '@/features/event-registration'
 import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
 import { formatDateTime } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui'
+import { EditEventLink } from '@/features/event-editor'
 
 export async function generateMetadata({
   params,
@@ -55,6 +56,14 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
               open={availability === 'open'}
               className="w-full"
             />
+
+            {event.status === 'published' && (
+              <EditEventLink
+                eventId={event.id}
+                organizerId={event.organizer.id}
+                className="w-full"
+              />
+            )}
           </>
         }
       />

@@ -6,6 +6,7 @@ import {
   organizerEventsApi,
   type EventInput,
 } from '@/entities/event'
+import { refreshPublicPages } from '../api/refreshPublicPages'
 
 export function useCreateEvent() {
   const queryClient = useQueryClient()
@@ -20,7 +21,9 @@ export function useUpdateEvent(id: string) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (data: EventInput) => organizerEventsApi.update(id, data),
-    onSuccess: (event) =>
-      queryClient.setQueryData(organizerEventQueryKey(id), event),
+    onSuccess: async (event) => {
+      queryClient.setQueryData(organizerEventQueryKey(id), event)
+      if (event.status === 'published') await refreshPublicPages(id)
+    },
   })
 }

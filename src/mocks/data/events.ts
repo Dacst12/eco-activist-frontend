@@ -44,7 +44,10 @@ export const events: EventDetails[] = titles.map((title, i) => {
     title,
     type,
     district: districts[i % districts.length],
-    organizer: organizers[i % organizers.length],
+    organizer:
+      i < 3
+        ? { id: 'u2', name: organizers[0].name }
+        : organizers[i % organizers.length],
     startsAt: startsAt.toISOString(),
     endsAt: new Date(startsAt.getTime() + 3 * 60 * 60 * 1000).toISOString(),
     address: `ул. Тестовая, ${i + 1}`,
