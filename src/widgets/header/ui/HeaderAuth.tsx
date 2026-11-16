@@ -4,7 +4,7 @@ import type { Route } from 'next'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useSession } from '@/entities/user'
-import { useLogout } from '@/features/auth'
+import { loginHref, useLogout } from '@/features/auth'
 import { routes } from '@/shared/config/routes'
 
 export function HeaderAuth() {
@@ -18,9 +18,7 @@ export function HeaderAuth() {
   if (!user) {
     const current = search ? `${pathname}?${search}` : pathname
     const href =
-      pathname === routes.login
-        ? routes.login
-        : (`${routes.login}?next=${encodeURIComponent(current)}` as Route)
+      pathname === routes.login ? routes.login : loginHref(current as Route)
 
     return (
       <Link href={href} className="text-primary font-semibold">
