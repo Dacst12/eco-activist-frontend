@@ -8,6 +8,7 @@ export const routes = {
   knowledge: '/knowledge' as Route,
   myEvents: '/account/events',
   myImpact: '/account/points' as Route,
-  organizerEvents: '/organizer/events',
   organizerPending: '/register/pending',
+  organizerEvents: '/organizer/events',
+  newEvent: '/organizer/events/new',
 } satisfies Record<string, Route>

@@ -34,7 +34,7 @@ export function TextareaField({
         rows={rows}
         className={cn(
           inputClass,
-          'field-sizing-content h-auto max-h-96 min-h-28 resize-y py-3',
+          'field-sizing-content h-auto max-h-96 min-h-28 resize-none py-3',
           error && 'border-danger focus:ring-danger'
         )}
         {...textareaProps}

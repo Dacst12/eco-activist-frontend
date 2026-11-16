@@ -8,7 +8,10 @@ export function getUserLinks(user: User): UserLink[] {
       return [{ href: routes.myEvents, label: 'Мои мероприятия' }]
     case 'organizer':
       return user.organizerStatus === 'approved'
-        ? [{ href: routes.organizerEvents, label: 'Кабинет организатора' }]
+        ? [
+            { href: routes.organizerEvents, label: 'Кабинет организатора' },
+            { href: routes.newEvent, label: 'Создать мероприятие' },
+          ]
         : [{ href: routes.organizerPending, label: 'Статус заявки' }]
     case 'admin':
       return []
