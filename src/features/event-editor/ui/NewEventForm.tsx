@@ -39,6 +39,7 @@ export function NewEventForm({
     <EventForm
       types={types}
       districts={districts}
+      storageKey="event-form:new"
       onSubmit={handleSubmit}
       className={className}
     >

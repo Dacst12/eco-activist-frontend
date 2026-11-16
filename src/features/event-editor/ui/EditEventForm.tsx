@@ -123,6 +123,7 @@ export function EditEventForm({ id, types, districts }: EditEventFormProps) {
       <EventForm
         types={types}
         districts={districts}
+        storageKey={`event-form:${id}`}
         defaultValues={toEventFormValues(event)}
         occupied={event.registeredCount}
         capacityHint={capacityHint}
