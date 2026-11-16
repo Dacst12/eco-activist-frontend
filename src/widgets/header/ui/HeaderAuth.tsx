@@ -4,49 +4,26 @@ import type { Route } from 'next'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useSession } from '@/entities/user'
-import { loginHref, useLogout } from '@/features/auth'
-import { routes } from '@/shared/config/routes'
+import { loginHref } from '@/features/auth'
+import { UserMenu } from './UserMenu'
 
 export function HeaderAuth() {
   const { data: user, isPending } = useSession()
-  const logout = useLogout()
   const pathname = usePathname()
   const search = useSearchParams().toString()
 
-  if (isPending) return <HeaderAuthPlaceholder />
+  if (isPending) return <div aria-hidden className="h-11 w-28" />
 
-  if (!user) {
-    const current = search ? `${pathname}?${search}` : pathname
-    const href =
-      pathname === routes.login ? routes.login : loginHref(current as Route)
+  if (user) return <UserMenu user={user} />
 
-    return (
-      <Link href={href} className="text-primary font-semibold">
-        Войти
-      </Link>
-    )
-  }
+  const next = (search ? `${pathname}?${search}` : pathname) as Route
 
   return (
-    <div className="flex items-center gap-4">
-      <span className="font-medium">{user.name}</span>
-      <button
-        type="button"
-        onClick={() => logout.mutate()}
-        disabled={logout.isPending}
-        className="text-muted hover:text-foreground"
-      >
-        Выйти
-      </button>
-    </div>
-  )
-}
-
-export function HeaderAuthPlaceholder() {
-  return (
-    <span
-      className="bg-page block h-6 w-24 animate-pulse rounded"
-      aria-hidden
-    />
+    <Link
+      href={loginHref(next)}
+      className="text-primary font-semibold transition-opacity hover:opacity-80"
+    >
+      Войти
+    </Link>
   )
 }

@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { routes } from '@/shared/config/routes'
 import { MainNav } from './MainNav'
-import { HeaderAuth, HeaderAuthPlaceholder } from './HeaderAuth'
-import { Suspense } from 'react'
+import { HeaderAuth } from './HeaderAuth'
 
 export function Header() {
   return (
@@ -17,9 +16,7 @@ export function Header() {
         <MainNav className="order-last w-full md:order-0 md:w-auto md:flex-1" />
 
         <div className="ml-auto md:ml-0">
-          <Suspense fallback={<HeaderAuthPlaceholder />}>
-            <HeaderAuth />
-          </Suspense>
+          <HeaderAuth />
         </div>
       </div>
     </header>

@@ -18,5 +18,5 @@ export const registerHref = (role: RegisterRole, next: Route): Route => {
 
 export const organizerPendingHref = (next: Route): Route =>
   (next === '/'
-    ? '/register/pending'
-    : `/register/pending?next=${encodeURIComponent(next)}`) as Route
+    ? routes.organizerPending
+    : `${routes.organizerPending}?next=${encodeURIComponent(next)}`) as Route
