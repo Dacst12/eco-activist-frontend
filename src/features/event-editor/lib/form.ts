@@ -17,6 +17,10 @@ export const emptyEventForm: EventFormValues = {
   capacity: '',
 }
 
+export const eventFormFields = Object.keys(
+  emptyEventForm
+) as (keyof EventFormValues)[]
+
 export const toEventFormValues = (event: EventDetails): EventFormValues => ({
   title: event.title,
   typeId: event.type.id,

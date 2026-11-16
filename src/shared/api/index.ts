@@ -4,5 +4,6 @@ export {
   getErrorMessage,
   getProblem,
   isUnauthorized,
+  isNotFound,
   type ProblemDetails,
 } from './errors'

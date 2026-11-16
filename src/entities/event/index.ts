@@ -19,3 +19,7 @@ export { EventCard } from './ui/EventCard'
 export { EventSeatsSummary } from './ui/EventSeatsSummary'
 export { EventLocationMap } from './ui/EventLocationMap'
 export { organizerEventsApi } from './api/organizer'
+export {
+  organizerEventQueryKey,
+  useOrganizerEvent,
+} from './api/organizerQueries'

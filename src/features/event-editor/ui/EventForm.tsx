@@ -3,8 +3,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState, type ReactNode } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { cn } from '@/shared/lib/cn'
-import { emptyEventForm } from '../lib/form'
+import type { DictionaryItem } from '@/entities/dictionary'
+import { applyServerErrors } from '@/shared/lib/form'
+import { FormError } from '@/shared/ui'
+import { emptyEventForm, eventFormFields } from '../lib/form'
 import {
   createEventSchema,
   type EventFormOutput,
@@ -12,7 +14,6 @@ import {
 } from '../model/eventSchema'
 import { EventMainFields } from './EventMainFields'
 import { EventPlaceFields } from './EventPlaceFields'
-import { DictionaryItem } from '@/entities/dictionary'
 
 type EventFormProps = {
   types: DictionaryItem[]
@@ -22,8 +23,8 @@ type EventFormProps = {
   onSubmit: (
     values: EventFormOutput,
     intent: string | undefined
-  ) => void | Promise<void>
-  children: ReactNode
+  ) => Promise<void>
+  children: (state: { isSubmitting: boolean }) => ReactNode
   className?: string
 }
 
@@ -44,12 +45,16 @@ export function EventForm({
     mode: 'onTouched',
   })
 
-  const submit = form.handleSubmit((values, event) => {
+  const submit = form.handleSubmit(async (values, event) => {
     const submitter = (event?.nativeEvent as SubmitEvent | undefined)?.submitter
-    return onSubmit(
-      values,
+    const intent =
       submitter instanceof HTMLButtonElement ? submitter.value : undefined
-    )
+    try {
+      await onSubmit(values, intent)
+      form.reset(values)
+    } catch (error) {
+      applyServerErrors(error, form.setError, eventFormFields)
+    }
   })
 
   return (
@@ -60,7 +65,14 @@ export function EventForm({
           <EventPlaceFields districts={districts} />
         </div>
 
-        <div className={cn('mt-6 flex flex-wrap gap-4')}>{children}</div>
+        <FormError
+          message={form.formState.errors.root?.server?.message}
+          className="mt-6"
+        />
+
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          {children({ isSubmitting: form.formState.isSubmitting })}
+        </div>
       </form>
     </FormProvider>
   )

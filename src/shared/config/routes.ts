@@ -12,3 +12,9 @@ export const routes = {
   organizerEvents: '/organizer/events',
   newEvent: '/organizer/events/new',
 } satisfies Record<string, Route>
+
+export const organizerEventRoutes = {
+  edit: (id: string) => `/organizer/events/${id}/edit` as Route,
+  preview: (id: string) => `/organizer/events/${id}/preview` as Route,
+  cancel: (id: string) => `/organizer/events/${id}/cancel` as Route,
+}

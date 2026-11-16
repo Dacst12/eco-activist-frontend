@@ -1,10 +1,13 @@
 'use client'
 
-import { buttonClass } from '@/shared/ui'
+import { useRouter } from 'next/navigation'
+import type { DictionaryItem } from '@/entities/dictionary'
+import { organizerEventRoutes } from '@/shared/config/routes'
 import { toEventInput } from '../lib/form'
 import type { EventFormOutput } from '../model/eventSchema'
+import { useCreateEvent } from '../model/useSaveEvent'
+import { DraftActions } from './DraftActions'
 import { EventForm } from './EventForm'
-import { DictionaryItem } from '@/entities/dictionary'
 
 type NewEventFormProps = {
   types: DictionaryItem[]
@@ -14,14 +17,22 @@ type NewEventFormProps = {
 
 export function NewEventForm({
   types,
-  className,
   districts,
+  className,
 }: NewEventFormProps) {
-  const handleSubmit = (
+  const router = useRouter()
+  const createEvent = useCreateEvent()
+
+  const handleSubmit = async (
     values: EventFormOutput,
     intent: string | undefined
   ) => {
-    console.log(intent, toEventInput(values))
+    const event = await createEvent.mutateAsync(toEventInput(values))
+    router.replace(
+      intent === 'preview'
+        ? organizerEventRoutes.preview(event.id)
+        : organizerEventRoutes.edit(event.id)
+    )
   }
 
   return (
@@ -31,22 +42,7 @@ export function NewEventForm({
       onSubmit={handleSubmit}
       className={className}
     >
-      <button
-        type="submit"
-        name="intent"
-        value="draft"
-        className={buttonClass('secondary')}
-      >
-        Сохранить черновик
-      </button>
-      <button
-        type="submit"
-        name="intent"
-        value="preview"
-        className={buttonClass('primary')}
-      >
-        Предпросмотр
-      </button>
+      {({ isSubmitting }) => <DraftActions isSubmitting={isSubmitting} />}
     </EventForm>
   )
 }

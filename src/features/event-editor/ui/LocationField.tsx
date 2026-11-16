@@ -173,6 +173,18 @@ export function LocationField({ districts }: { districts: DictionaryItem[] }) {
         className="h-64"
       />
 
+      <p className="text-muted text-xs">
+        Поиск адресов:{' '}
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noreferrer"
+          className="hover:text-primary underline"
+        >
+          © OpenStreetMap
+        </a>
+      </p>
+
       <p
         className={cn('text-sm', mapError ? 'text-danger-text' : 'text-muted')}
       >

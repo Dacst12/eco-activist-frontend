@@ -10,6 +10,9 @@ export type ProblemDetails = {
 export const isUnauthorized = (error: unknown) =>
   isAxiosError(error) && error.response?.status === 401
 
+export const isNotFound = (error: unknown) =>
+  isAxiosError(error) && error.response?.status === 404
+
 export const getProblem = (error: unknown): ProblemDetails | null => {
   if (!isAxiosError(error)) return null
   const data: unknown = error.response?.data
