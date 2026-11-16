@@ -1,5 +1,4 @@
 import axios, { type AxiosInstance } from 'axios'
-import { mocksReady } from '@/shared/lib/mocks-ready'
 import { getAccessToken, setAccessToken } from './token'
 
 declare module 'axios' {
@@ -8,20 +7,11 @@ declare module 'axios' {
   }
 }
 
-const createClient = () => {
-  const client = axios.create({
+const createClient = () =>
+  axios.create({
     baseURL: '/api',
     withCredentials: true,
   })
-
-  if (process.env.NEXT_PUBLIC_USE_MOCKS === 'true') {
-    client.interceptors.request.use(async (config) => {
-      await mocksReady
-      return config
-    })
-  }
-  return client
-}
 
 export const api: AxiosInstance = createClient()
 

@@ -2,7 +2,6 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState, type ReactNode } from 'react'
-import { MswProvider } from '@/mocks/MswProvider'
 import { onUnauthorized } from '@/shared/api'
 import { endSession } from '@/entities/user'
 
@@ -19,8 +18,6 @@ export function Providers({ children }: { children: ReactNode }) {
   useEffect(() => onUnauthorized(() => endSession(queryClient)), [queryClient])
 
   return (
-    <MswProvider>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </MswProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 }

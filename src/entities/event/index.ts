@@ -23,3 +23,4 @@ export {
   organizerEventQueryKey,
   useOrganizerEvent,
 } from './api/organizerQueries'
+export { EventDetailsView } from './ui/EventDetailsView'
