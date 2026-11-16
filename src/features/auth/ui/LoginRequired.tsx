@@ -1,7 +1,7 @@
 import type { Route } from 'next'
 import Link from 'next/link'
 import { buttonClass } from '@/shared/ui'
-import { loginHref } from '../lib/next'
+import { loginHref } from '@/shared/lib/url'
 
 export function LoginRequired({ next }: { next: Route }) {
   return (

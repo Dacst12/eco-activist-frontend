@@ -10,7 +10,8 @@ import {
 import { getEvent } from '@/entities/event/api/server'
 import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
 import { formatDateTime, formatEventDate } from '@/shared/lib/date'
-import { Badge, Button } from '@/shared/ui'
+import { Badge } from '@/shared/ui'
+import { JoinEventButton } from '@/features/event-registration'
 
 export async function generateMetadata({
   params,
@@ -105,9 +106,12 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
             </p>
           )}
 
-          <Button disabled={availability !== 'open'} className="w-full">
-            {action}
-          </Button>
+          <JoinEventButton
+            eventId={event.id}
+            label={action}
+            open={availability === 'open'}
+            className="w-full"
+          />
         </aside>
       </div>
     </main>

@@ -1,3 +1,6 @@
+import { Route } from 'next'
+import { routes } from '../config/routes'
+
 export type SearchParams = Record<string, string | string[] | undefined>
 
 export const toQueryString = (params: Record<string, string | undefined>) => {
@@ -7,3 +10,8 @@ export const toQueryString = (params: Record<string, string | undefined>) => {
   }
   return query.toString()
 }
+
+export const loginHref = (next: Route): Route =>
+  (next === '/'
+    ? routes.login
+    : `${routes.login}?next=${encodeURIComponent(next)}`) as Route

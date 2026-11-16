@@ -4,8 +4,8 @@ import type { Route } from 'next'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useSession } from '@/entities/user'
-import { loginHref } from '@/features/auth'
 import { UserMenu } from './UserMenu'
+import { loginHref } from '@/shared/lib/url'
 
 export function HeaderAuth() {
   const { data: user, isPending } = useSession()

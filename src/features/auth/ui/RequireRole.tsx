@@ -6,9 +6,9 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { useSession, type UserRole } from '@/entities/user'
 import { getAccess } from '../lib/access'
 import { organizerPendingHref } from '../lib/role'
-import { loginHref } from '../lib/next'
 import { AccessDenied } from './AccessDenied'
 import { LoginRequired } from './LoginRequired'
+import { loginHref } from '@/shared/lib/url'
 
 type RequireRoleProps = {
   roles: readonly UserRole[]
