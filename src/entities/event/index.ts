@@ -1,7 +1,9 @@
 export type {
-  EventSummary,
+  CancelEventRequest,
   EventDetails,
+  EventInput,
   EventStatus,
+  EventSummary,
   GeoPoint,
 } from './model/types'
 export type { EventFilters } from './model/filters'
@@ -16,3 +18,4 @@ export { parseEventFilters } from './lib/filters'
 export { EventCard } from './ui/EventCard'
 export { EventSeatsSummary } from './ui/EventSeatsSummary'
 export { EventLocationMap } from './ui/EventLocationMap'
+export { organizerEventsApi } from './api/organizer'

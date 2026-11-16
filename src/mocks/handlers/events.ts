@@ -14,6 +14,7 @@ export const eventHandlers = [
       .filter((event) => {
         const date = toCityDateKey(event.startsAt)
         return (
+          event.status === 'published' &&
           (!type || event.type.id === type) &&
           (!district || event.district.id === district) &&
           (!from || date >= from) &&
@@ -31,7 +32,7 @@ export const eventHandlers = [
 
   http.get('*/api/events/:id', ({ params }) => {
     const event = events.find((e) => e.id === params.id)
-    return event
+    return event && event.status !== 'draft'
       ? HttpResponse.json(event)
       : new HttpResponse(null, { status: 404 })
   }),

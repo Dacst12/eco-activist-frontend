@@ -20,7 +20,7 @@ const titles = [
   'Лекция о компостировании',
 ]
 
-const pointsByType: Record<string, number> = {
+export const pointsByType: Record<string, number> = {
   '1': 10,
   '2': 5,
   '3': 15,
@@ -61,18 +61,20 @@ export const events: EventDetails[] = titles.map((title, i) => {
     points: pointsByType[type.id],
     status: 'published',
     description: `Присоединяйтесь к мероприятию «${title}». Подробности уточняйте у организатора.`,
-    inventory: ['Перчатки', 'Мешки для мусора'],
+    conditions:
+      'Перчатки и мешки выдадим на месте. Возьмите воду и удобную закрытую обувь.',
     organizerContacts: 't.me/eco_example',
   }
 })
 
 export const toSummary = ({
   description,
-  inventory,
+  conditions,
   organizerContacts,
   meetingPoint,
   confirmedCount,
   pendingCount,
   registrationEndsAt,
+  cancelReason,
   ...summary
 }: EventDetails) => summary

@@ -73,17 +73,12 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
             </p>
           </section>
 
-          {event.inventory.length > 0 && (
-            <section className={cardClass}>
-              <h2 className="text-subtitle font-semibold">Условия участия</h2>
-              <p className="text-muted mt-2">Возьмите с собой:</p>
-              <ul className="text-muted mt-1 list-disc pl-6">
-                {event.inventory.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <section className={cardClass}>
+            <h2 className="text-subtitle font-semibold">Условия участия</h2>
+            <p className="text-muted mt-2 whitespace-pre-line">
+              {event.conditions}
+            </p>
+          </section>
 
           <section className={cardClass}>
             <p className="text-primary text-subtitle font-semibold">
@@ -98,6 +93,10 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
           className={`${cardClass} flex flex-col gap-4 lg:sticky lg:top-8`}
         >
           <EventSeatsSummary event={event} />
+
+          {event.status === 'cancelled' && event.cancelReason && (
+            <p className="text-danger">Причина отмены: {event.cancelReason}</p>
+          )}
 
           {availability === 'open' && (
             <p>
