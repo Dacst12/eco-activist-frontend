@@ -8,6 +8,7 @@ import { districts, eventTypes } from '../data/dictionaries'
 import { events, pointsByType } from '../data/events'
 import { users } from '../data/users'
 import { readAccessToken } from '../lib/tokens'
+import { syncApplications } from '../lib/applications'
 
 const HOUR = 60 * 60 * 1000
 
@@ -87,6 +88,8 @@ export const organizerEventHandlers = [
     if (organizer instanceof Response) return organizer
 
     const event = findOwnEvent(params.id, organizer.id)
+    if (event) syncApplications(event)
+
     return event
       ? HttpResponse.json(event)
       : problem(404, 'Мероприятие не найдено')
@@ -129,10 +132,14 @@ export const organizerEventHandlers = [
       return problem(409, 'Мероприятие уже началось, изменить его нельзя')
 
     const input = (await request.json()) as EventInput
+    syncApplications(event)
+
     const errors = validate(input, event.registeredCount)
     if (errors) return problem(400, 'Проверьте поля формы', errors)
 
     Object.assign(event, fromInput(input))
+    syncApplications(event)
+
     return HttpResponse.json(event)
   }),
 
@@ -169,8 +176,12 @@ export const organizerEventHandlers = [
           Reason: ['Укажите причину отмены'],
         })
 
+      syncApplications(event)
+
       event.status = 'cancelled'
       event.cancelReason = reason.trim()
+      syncApplications(event)
+
       return HttpResponse.json(event)
     }
   ),
