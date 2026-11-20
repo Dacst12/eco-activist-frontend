@@ -119,7 +119,7 @@ export function EventForm({
           className="mt-6"
         />
 
-        <div className="mt-6 flex flex-wrap items-center gap-4">
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-4">
           {children({ isSubmitting: form.formState.isSubmitting })}
         </div>
 

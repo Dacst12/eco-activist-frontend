@@ -6,7 +6,6 @@ export const eventStatusConfig: Record<
   { label: string; tone: BadgeTone }
 > = {
   draft: { label: 'Черновик', tone: 'neutral' },
-  moderation: { label: 'На модерации', tone: 'warning' },
   published: { label: 'Опубликовано', tone: 'success' },
   cancelled: { label: 'Отменено', tone: 'danger' },
   completed: { label: 'Завершено', tone: 'neutral' },
