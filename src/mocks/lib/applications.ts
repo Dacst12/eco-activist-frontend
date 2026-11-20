@@ -2,6 +2,14 @@ import type { Application, ApplicationStatus } from '@/entities/application'
 import type { EventDetails } from '@/entities/event'
 import { applications } from '../data/applications'
 
+export const applicationNotifications: {
+  type: 'participant_removed'
+  applicationId: string
+  eventId: string
+  userId: string
+  createdAt: string
+}[] = []
+
 export function setApplicationStatus(
   application: Application,
   status: ApplicationStatus,
