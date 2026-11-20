@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios'
 export type ProblemDetails = {
   title?: string
   detail?: string
+  code?: string
   status?: number
   errors?: Record<string, string[]>
 }

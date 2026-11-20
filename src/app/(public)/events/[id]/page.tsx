@@ -11,6 +11,7 @@ import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
 import { formatDateTime } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui'
 import { EditEventLink } from '@/features/event-editor'
+import { refreshPublicPages } from '@/features/event-editor/api/refreshPublicPages'
 
 export async function generateMetadata({
   params,
@@ -54,6 +55,8 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
               eventId={event.id}
               label={action}
               open={availability === 'open'}
+              registrationEndsAt={event.registrationEndsAt}
+              refreshEventAction={refreshPublicPages.bind(null, event.id)}
               className="w-full"
             />
 

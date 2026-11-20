@@ -6,27 +6,27 @@ export const applicationStatusConfig: Record<
   { label: string; tone: BadgeTone }
 > = {
   pending: {
-    label: 'Ожидает подтверждения',
+    label: 'Запись ожидает подтверждения',
     tone: 'warning',
   },
   confirmed: {
-    label: 'Подтверждена',
+    label: 'Запись подтверждена',
     tone: 'success',
   },
   rejected: {
-    label: 'Отклонена',
+    label: 'Запись отклонена',
     tone: 'danger',
   },
   removed: {
-    label: 'Снят организатором',
+    label: 'Запись отменена организатором',
     tone: 'danger',
   },
   cancelled: {
-    label: 'Отменена волонтёром',
+    label: 'Запись отменена волонтёром',
     tone: 'neutral',
   },
   expired: {
-    label: 'Истекла',
+    label: 'Запись истекла',
     tone: 'warning',
   },
   event_cancelled: {
