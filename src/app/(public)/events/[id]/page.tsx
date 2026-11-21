@@ -57,6 +57,7 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
               open={availability === 'open'}
               registrationEndsAt={event.registrationEndsAt}
               refreshEventAction={refreshPublicPages.bind(null, event.id)}
+              cancelUntil={event.status === 'published' ? event.startsAt : null}
               className="w-full"
             />
 

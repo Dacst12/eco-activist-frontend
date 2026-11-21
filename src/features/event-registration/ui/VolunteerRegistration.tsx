@@ -1,11 +1,12 @@
 import { useRouter } from 'next/navigation'
-import { startTransition } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 import { useApplication } from '@/entities/application'
 import { getErrorMessage } from '@/shared/api'
 import { cn } from '@/shared/lib/cn'
-import { Button } from '@/shared/ui'
+import { Button, ConfirmDialog } from '@/shared/ui'
 import { ApplicationStatusBlock } from './ApplicationStatusBlock'
 import { useSubmitApplication } from '../model/useSubmitApplication'
+import { useCancelApplication } from '../model/useCancelApplication'
 
 export type VolunteerRegistrationProps = {
   userId: string
@@ -14,6 +15,7 @@ export type VolunteerRegistrationProps = {
   open: boolean
   registrationEndsAt: string
   refreshEventAction: () => Promise<void>
+  cancelUntil: string | null
   className?: string
 }
 
@@ -24,10 +26,13 @@ export function VolunteerRegistration({
   open,
   registrationEndsAt,
   refreshEventAction,
+  cancelUntil,
   className,
 }: VolunteerRegistrationProps) {
   const router = useRouter()
   const mine = useApplication(eventId, userId)
+  const [now, setNow] = useState(Date.now)
+  const deadline = cancelUntil ? Date.parse(cancelUntil) : 0
 
   function refreshSeats() {
     startTransition(async () => {
@@ -40,6 +45,7 @@ export function VolunteerRegistration({
   }
 
   const submission = useSubmitApplication(eventId, userId, refreshSeats)
+  const cancellation = useCancelApplication(eventId, userId, refreshSeats)
 
   async function checkApplication() {
     const result = await mine.refetch()
@@ -51,6 +57,15 @@ export function VolunteerRegistration({
       }
     }
   }
+
+  useEffect(() => {
+    if (now >= deadline) return
+
+    const delay = Math.min(Math.max(0, deadline - Date.now()), 2_147_483_647)
+    const timer = window.setTimeout(() => setNow(Date.now()), delay)
+
+    return () => window.clearTimeout(timer)
+  }, [now, deadline])
 
   if (mine.isPending) {
     return (
@@ -88,6 +103,21 @@ export function VolunteerRegistration({
           registrationEndsAt={registrationEndsAt}
         />
       )}
+
+      {now < deadline &&
+        (application?.status === 'pending' ||
+          application?.status === 'confirmed') && (
+          <ConfirmDialog
+            trigger="Отменить участие"
+            title="Отменить участие?"
+            description="Ваше место освободится. Вы сможете записаться снова, пока запись открыта и есть свободные места."
+            confirmLabel="Да, отменить"
+            backLabel="Сохранить участие"
+            pending={cancellation.isPending}
+            error={cancellation.isError && getErrorMessage(cancellation.error)}
+            onConfirm={() => cancellation.mutate()}
+          />
+        )}
 
       {submission.isError && canApply && (
         <p role="alert" className="text-danger-text text-sm">
