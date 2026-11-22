@@ -12,6 +12,7 @@ import { formatDateTime } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui'
 import { EditEventLink } from '@/features/event-editor'
 import { refreshPublicPages } from '@/features/event-editor/api/refreshPublicPages'
+import { ApplicationsLink } from '@/features/organizer-applications/ui/ApplicationsLink'
 
 export async function generateMetadata({
   params,
@@ -61,11 +62,16 @@ export default async function EventPage({ params }: PageProps<'/events/[id]'>) {
               className="w-full"
             />
 
+            <ApplicationsLink
+              eventId={event.id}
+              organizerId={event.organizer.id}
+            />
+
             {event.status === 'published' && (
               <EditEventLink
                 eventId={event.id}
                 organizerId={event.organizer.id}
-                className="w-full"
+                className="border-success-soft w-full border-2"
               />
             )}
           </>

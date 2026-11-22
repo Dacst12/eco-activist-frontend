@@ -10,3 +10,4 @@ export type {
 export { applicationStatusConfig } from './model/status'
 export { applicationQueryOptions, useApplication } from './api/queries'
 export { applicationsApi, organizerApplicationsApi } from './api/applications'
+export { useOrganizerApplications } from './api/organizersQueries'

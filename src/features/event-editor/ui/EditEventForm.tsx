@@ -114,9 +114,18 @@ export function EditEventForm({ id, types, districts }: EditEventFormProps) {
         </div>
 
         {!isDraft && (
-          <Link href={publicLink.href} className={buttonClass('secondary')}>
-            Страница мероприятия
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={organizerEventRoutes.applications(id)}
+              className={buttonClass('secondary')}
+            >
+              Заявки на мероприятие
+            </Link>
+
+            <Link href={publicLink.href} className={buttonClass('secondary')}>
+              Страница мероприятия
+            </Link>
+          </div>
         )}
       </div>
 

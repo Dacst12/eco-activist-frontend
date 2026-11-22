@@ -14,6 +14,7 @@ export const routes = {
 } satisfies Record<string, Route>
 
 export const organizerEventRoutes = {
+  applications: (id: string) => `/organizer/events/${id}/applications` as Route,
   edit: (id: string) => `/organizer/events/${id}/edit` as Route,
   preview: (id: string) => `/organizer/events/${id}/preview` as Route,
   cancel: (id: string) => `/organizer/events/${id}/cancel` as Route,
