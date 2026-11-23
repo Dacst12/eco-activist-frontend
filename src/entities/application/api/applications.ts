@@ -4,6 +4,7 @@ import type {
   ApplicationList,
   ApplicationListParams,
 } from '../model/types'
+import { MyEventsPage, MyEventsParams } from '../model/myEvents'
 
 const eventPath = (eventId: string) => `/events/${encodeURIComponent(eventId)}`
 
@@ -11,6 +12,9 @@ const organizerPath = (eventId: string) =>
   `/organizer/events/${encodeURIComponent(eventId)}/applications`
 
 export const applicationsApi = {
+  myEvents: (params: MyEventsParams) =>
+    api.get<MyEventsPage>('/account/events', { params }).then((r) => r.data),
+
   mine: (eventId: string) =>
     api
       .get<Application | null>(`${eventPath(eventId)}/application`)

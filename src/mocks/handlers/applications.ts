@@ -16,6 +16,7 @@ import {
   syncApplications,
 } from '../lib/applications'
 import { readAccessToken } from '../lib/tokens'
+import { listMyEvents } from '../lib/myEvents'
 
 const problem = (status: number, title: string, code: string) =>
   HttpResponse.json({ status, title, code }, { status })
@@ -51,6 +52,36 @@ const isOpen = (event: EventDetails, now: number) =>
 let nextId = 1
 
 export const applicationHandlers = [
+  http.get('*/api/account/events', ({ request }) => {
+    const user = currentUser(request, 'volunteer')
+    if (user instanceof Response) return user
+
+    const query = new URL(request.url).searchParams
+    const section = query.get('section') ?? 'active'
+    const page = Number(query.get('page') ?? 1)
+    const pageSize = Number(query.get('pageSize') ?? 10)
+
+    if (
+      (section !== 'active' && section !== 'history') ||
+      !Number.isSafeInteger(page) ||
+      page < 1 ||
+      !Number.isSafeInteger(pageSize) ||
+      pageSize < 1 ||
+      pageSize > 100
+    ) {
+      return problem(400, 'Некорректные параметры списка', 'invalid_query')
+    }
+
+    const rows = listMyEvents(user.id, section, Date.now())
+    const offset = (page - 1) * pageSize
+
+    return HttpResponse.json({
+      items: rows.slice(offset, offset + pageSize),
+      total: rows.length,
+      page,
+      pageSize,
+    })
+  }),
   http.get('*/api/events/:eventId/application', ({ request, params }) => {
     const user = currentUser(request, 'volunteer')
     if (user instanceof Response) return user
@@ -87,7 +118,6 @@ export const applicationHandlers = [
     if (event.registeredCount >= event.capacity)
       return problem(409, 'Свободных мест нет', 'no_seats')
 
-    // Проверка и резервирование выполняются синхронно в одном процессе.
     const submittedAt = new Date(now).toISOString()
     const application: Application = existing ?? {
       id: `application-${nextId++}`,
