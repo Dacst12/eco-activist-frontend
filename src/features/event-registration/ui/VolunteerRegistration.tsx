@@ -109,6 +109,7 @@ export function VolunteerRegistration({
           application?.status === 'confirmed') && (
           <ConfirmDialog
             trigger="Отменить участие"
+            triggerClassName="border-danger text-danger border w-full hover:bg-danger hover:text-white"
             title="Отменить участие?"
             description="Ваше место освободится. Вы сможете записаться снова, пока запись открыта и есть свободные места."
             confirmLabel="Да, отменить"

@@ -24,7 +24,7 @@ export function EventCard({ event }: EventCardProps) {
         {event.organizer.name} · проверен
       </p>
 
-      <p className="mt-3 font-semibold">
+      <p className="mt-3 flex justify-between font-semibold">
         {isFull(event) ? (
           <span className="text-muted">Мест нет</span>
         ) : (
@@ -33,8 +33,10 @@ export function EventCard({ event }: EventCardProps) {
             {event.capacity}
           </span>
         )}
-        <span> · </span>
-        <Link href={`/events/${event.id}` as Route} className="text-primary">
+        <Link
+          href={`/events/${event.id}` as Route}
+          className="text-primary font-medium hover:underline"
+        >
           Подробнее →
         </Link>
       </p>

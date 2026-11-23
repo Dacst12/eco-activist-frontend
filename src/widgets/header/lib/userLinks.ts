@@ -5,7 +5,11 @@ import type { UserLink } from '../model/types'
 export function getUserLinks(user: User): UserLink[] {
   switch (user.role) {
     case 'volunteer':
-      return [{ href: routes.myEvents, label: 'Мои мероприятия' }]
+      return [
+        { href: routes.account, label: 'Мой кабинет' },
+        { href: routes.myEvents, label: 'Активные мероприятия' },
+        { href: routes.myEventsHistory, label: 'История мероприятий' },
+      ]
     case 'organizer':
       return user.organizerStatus === 'approved'
         ? [

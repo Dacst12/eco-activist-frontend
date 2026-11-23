@@ -26,7 +26,7 @@ export function ReviewApplicationActions({
 
       <ConfirmDialog
         trigger="Отклонить"
-        triggerClassName="border-danger text-danger min-h-11 h-auto flex-auto border px-3 py-2 lg:min-h-0 lg:min-w-0 lg:flex-none"
+        triggerClassName="border-danger text-danger min-h-11 h-auto flex-auto border px-3 py-2 lg:min-h-0 lg:min-w-0 lg:flex-none hover:bg-danger hover:text-white"
         title="Отклонить заявку?"
         description={`Участник: ${application.volunteer.name}. После отказа место освободится.`}
         backLabel="Назад"

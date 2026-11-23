@@ -13,7 +13,7 @@ export function RemoveParticipantAction({
   return (
     <ConfirmDialog
       trigger="Снять с мероприятия"
-      triggerClassName="border-danger text-danger min-h-11 h-auto w-full border px-3 py-2 lg:min-h-0 lg:min-w-0 lg:w-auto"
+      triggerClassName="border-danger text-danger min-h-11 h-auto w-full border px-3 py-2 lg:min-h-0 lg:min-w-0 lg:w-auto hover:bg-danger hover:text-white"
       title="Снять участника с мероприятия?"
       description={`Участник: ${application.volunteer.name}. Место освободится, волонтёр получит уведомление и больше не сможет записаться на это мероприятие.`}
       backLabel="Оставить"
