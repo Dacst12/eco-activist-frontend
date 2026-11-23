@@ -1,14 +1,10 @@
 import Link from 'next/link'
-import {
-  applicationStatusConfig,
-  type MyEventsPage,
-  type MyEventsSection,
-} from '@/entities/application'
+import type { MyEventsPage, MyEventsSection } from '@/entities/application'
 import { routes } from '@/shared/config/routes'
-import { formatDateTime } from '@/shared/lib/date'
-import { Badge, Button, buttonClass } from '@/shared/ui'
+import { Button, buttonClass } from '@/shared/ui'
 import { ActiveEventCard } from './ActiveEventCard'
 import { ActiveEventsPreview } from './ActiveEventsPreview'
+import { EventHistory } from './EventHistory'
 
 type Props = {
   data: MyEventsPage
@@ -60,37 +56,14 @@ export function MyEventsResults({
     <>
       {section === 'active' ? (
         <ul className="grid gap-4">
-          {(preview ? items.slice(0, 1) : items).map((item) => (
+          {items.map((item) => (
             <li key={item.application.id}>
               <ActiveEventCard item={item} asOf={asOf} />
             </li>
           ))}
         </ul>
       ) : (
-        <ul className="space-y-2">
-          {items.map(({ event, application }) => (
-            <li
-              key={application.id}
-              className="bg-surface rounded-control flex flex-wrap items-center justify-between gap-3 p-4"
-            >
-              <div className="min-w-0">
-                <Link
-                  href={`/events/${encodeURIComponent(event.id)}`}
-                  className="text-primary font-semibold wrap-anywhere hover:underline"
-                >
-                  {event.title}
-                </Link>
-                <p className="text-muted text-sm">
-                  {formatDateTime(event.startsAt)}
-                </p>
-              </div>
-
-              <Badge tone={applicationStatusConfig[application.status].tone}>
-                {applicationStatusConfig[application.status].label}
-              </Badge>
-            </li>
-          ))}
-        </ul>
+        <EventHistory items={preview ? items.slice(0, 3) : items} />
       )}
 
       {!preview && pages > 1 && (
