@@ -14,7 +14,7 @@ export function useReviewApplication(application: Application) {
   return useMutation({
     retry: false,
 
-    mutationFn: (action: 'confirm' | 'reject') =>
+    mutationFn: (action: 'confirm' | 'reject' | 'remove') =>
       organizerApplicationsApi[action](eventId, id),
 
     onSettled: async (updated) => {

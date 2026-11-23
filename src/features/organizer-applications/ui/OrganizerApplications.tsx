@@ -22,29 +22,35 @@ export function OrganizerApplications({ eventId }: { eventId: string }) {
 
   const [now, setNow] = useState(Date.now)
 
+  const startsAt = Date.parse(event.data?.startsAt ?? '')
   const deadline = Math.min(
     Date.parse(list.data?.registrationEndsAt ?? ''),
-    Date.parse(event.data?.startsAt ?? '')
+    startsAt
   )
 
+  const nextDeadline = now < deadline ? deadline : startsAt
   const { refetch } = list
 
   useEffect(() => {
-    if (!Number.isFinite(deadline) || now >= deadline) return
+    if (!Number.isFinite(nextDeadline) || now >= nextDeadline) return
 
-    const delay = Math.min(Math.max(0, deadline - Date.now()), 2_147_483_647)
+    const delay = Math.min(
+      Math.max(0, nextDeadline - Date.now()),
+      2_147_483_647
+    )
 
     const timer = window.setTimeout(() => {
       const time = Date.now()
       setNow(time)
 
-      if (time >= deadline) void refetch()
+      if (time >= nextDeadline) void refetch()
     }, delay)
 
     return () => window.clearTimeout(timer)
-  }, [deadline, now, refetch])
+  }, [nextDeadline, now, refetch])
 
   const reviewOpen = event.data?.status === 'published' && now < deadline
+  const removalOpen = event.data?.status === 'published' && now < startsAt
 
   if (list.isError || event.isError) {
     return (
@@ -100,7 +106,11 @@ export function OrganizerApplications({ eventId }: { eventId: string }) {
       />
 
       {items.length ? (
-        <ApplicationsTable items={items} reviewOpen={reviewOpen} />
+        <ApplicationsTable
+          items={items}
+          reviewOpen={reviewOpen}
+          removalOpen={removalOpen}
+        />
       ) : (
         <p>
           {page > pages

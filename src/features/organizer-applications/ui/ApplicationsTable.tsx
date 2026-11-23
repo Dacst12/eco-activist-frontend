@@ -5,13 +5,15 @@ import {
 import { formatDateTime } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui'
 import { ReviewApplicationActions } from './ReviewApplicationActions'
+import { RemoveParticipantAction } from './RemoveParticipantAction'
 
 type Props = {
   items: Application[]
   reviewOpen: boolean
+  removalOpen: boolean
 }
 
-export function ApplicationsTable({ items, reviewOpen }: Props) {
+export function ApplicationsTable({ items, reviewOpen, removalOpen }: Props) {
   return (
     <div className="lg:border-line lg:rounded-control lg:overflow-hidden lg:border">
       <table className="block w-full text-left lg:table lg:border-collapse">
@@ -69,14 +71,8 @@ export function ApplicationsTable({ items, reviewOpen }: Props) {
                   ) : (
                     <span className="text-muted">Рассмотрение закрыто</span>
                   )
-                ) : item.status === 'confirmed' ? (
-                  <button
-                    type="button"
-                    disabled
-                    className="rounded-control border-danger text-danger min-h-11 w-full border px-3 py-2 disabled:opacity-60 lg:min-h-0 lg:w-auto"
-                  >
-                    Снять с мероприятия
-                  </button>
+                ) : item.status === 'confirmed' && removalOpen ? (
+                  <RemoveParticipantAction application={item} />
                 ) : (
                   <span className="text-muted">
                     <span className="lg:hidden">Нет доступных действий</span>
