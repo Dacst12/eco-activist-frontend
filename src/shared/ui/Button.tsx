@@ -14,7 +14,7 @@ export const buttonClass = (
   className?: string
 ) =>
   cn(
-    'rounded-control inline-flex h-12 items-center justify-center px-6 font-medium transition-colors lg:min-w-45',
+    'rounded-control inline-flex min-h-12 items-center justify-center px-6 py-3 font-medium transition-colors lg:min-w-45',
     'disabled:bg-disabled disabled:text-disabled-foreground disabled:pointer-events-none',
     variants[variant],
     className

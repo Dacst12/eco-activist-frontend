@@ -11,6 +11,7 @@ type Props = {
   backLabel: string
   pending: boolean
   error?: ReactNode
+  triggerClassName?: string
   onConfirm: () => void
 }
 
@@ -22,6 +23,7 @@ export function ConfirmDialog({
   backLabel,
   pending,
   error,
+  triggerClassName = 'w-full',
   onConfirm,
 }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
@@ -31,8 +33,9 @@ export function ConfirmDialog({
   return (
     <>
       <Button
-        variant="danger"
-        className="w-full"
+        variant="secondary"
+        className={triggerClassName}
+        disabled={pending}
         onClick={() => dialog.current?.showModal()}
       >
         {trigger}
@@ -65,13 +68,19 @@ export function ConfirmDialog({
           <Button
             autoFocus
             variant="secondary"
+            className="border-success-text flex-1 border"
             disabled={pending}
             onClick={() => dialog.current?.close()}
           >
             {backLabel}
           </Button>
 
-          <Button variant="danger" disabled={pending} onClick={onConfirm}>
+          <Button
+            variant="danger"
+            disabled={pending}
+            onClick={onConfirm}
+            className="flex-1"
+          >
             {pending ? 'Подождите…' : confirmLabel}
           </Button>
         </div>
