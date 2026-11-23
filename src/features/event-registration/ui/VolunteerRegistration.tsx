@@ -3,10 +3,10 @@ import { startTransition, useEffect, useState } from 'react'
 import { useApplication } from '@/entities/application'
 import { getErrorMessage } from '@/shared/api'
 import { cn } from '@/shared/lib/cn'
-import { Button, ConfirmDialog } from '@/shared/ui'
+import { Button } from '@/shared/ui'
 import { ApplicationStatusBlock } from './ApplicationStatusBlock'
 import { useSubmitApplication } from '../model/useSubmitApplication'
-import { useCancelApplication } from '../model/useCancelApplication'
+import { CancelParticipation } from './CancelParticipation'
 
 export type VolunteerRegistrationProps = {
   userId: string
@@ -45,7 +45,6 @@ export function VolunteerRegistration({
   }
 
   const submission = useSubmitApplication(eventId, userId, refreshSeats)
-  const cancellation = useCancelApplication(eventId, userId, refreshSeats)
 
   async function checkApplication() {
     const result = await mine.refetch()
@@ -107,16 +106,10 @@ export function VolunteerRegistration({
       {now < deadline &&
         (application?.status === 'pending' ||
           application?.status === 'confirmed') && (
-          <ConfirmDialog
-            trigger="Отменить участие"
-            triggerClassName="border-danger text-danger border w-full hover:bg-danger hover:text-white"
-            title="Отменить участие?"
-            description="Ваше место освободится. Вы сможете записаться снова, пока запись открыта и есть свободные места."
-            confirmLabel="Да, отменить"
-            backLabel="Сохранить участие"
-            pending={cancellation.isPending}
-            error={cancellation.isError && getErrorMessage(cancellation.error)}
-            onConfirm={() => cancellation.mutate()}
+          <CancelParticipation
+            eventId={eventId}
+            userId={userId}
+            className="w-full"
           />
         )}
 

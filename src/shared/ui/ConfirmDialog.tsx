@@ -48,7 +48,7 @@ export function ConfirmDialog({
         onCancel={(event) => {
           if (pending) event.preventDefault()
         }}
-        className="bg-surface text-foreground rounded-control fixed inset-0 m-auto w-[min(28rem,calc(100%-2rem))] p-6 shadow-lg backdrop:bg-black/40"
+        className="bg-surface text-foreground rounded-control fixed inset-0 m-auto w-[min(29rem,calc(100%-2rem))] p-6 shadow-lg backdrop:bg-black/40"
       >
         <h2 id={titleId} className="text-xl font-semibold">
           {title}

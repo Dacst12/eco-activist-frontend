@@ -1,13 +1,17 @@
 import Link from 'next/link'
 import type { MyEventItem } from '@/entities/application'
-import { ApplicationStatusBlock } from '@/features/event-registration'
+import {
+  ApplicationStatusBlock,
+  CancelParticipation,
+} from '@/features/event-registration'
 import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
 import {
   formatDateTime,
   formatEventDate,
   toCityDateKey,
 } from '@/shared/lib/date'
-import { Badge, Button } from '@/shared/ui'
+import { Badge } from '@/shared/ui'
+import { useSession } from '@/entities/user'
 
 type Props = {
   item: MyEventItem
@@ -16,6 +20,9 @@ type Props = {
 
 export function ActiveEventCard({ item, asOf }: Props) {
   const { event, application } = item
+
+  const { data: user } = useSession()
+
   const started = Date.parse(event.startsAt) <= asOf
   const sameDay = toCityDateKey(event.startsAt) === toCityDateKey(event.endsAt)
 
@@ -64,11 +71,19 @@ export function ActiveEventCard({ item, asOf }: Props) {
         registrationEndsAt={event.registrationEndsAt}
       />
 
-      {!started && (
-        <Button variant="secondary" className="w-full sm:w-auto" disabled>
-          Отменить участие
-        </Button>
-      )}
+      {!started &&
+        user?.role === 'volunteer' &&
+        event.status === 'published' &&
+        (application.status === 'pending' ||
+          application.status === 'confirmed') && (
+          <CancelParticipation
+            key={application.id}
+            eventId={event.id}
+            userId={user.id}
+            title={event.title}
+            className="w-full sm:w-auto"
+          />
+        )}
     </article>
   )
 }
