@@ -2,6 +2,7 @@ import type { EventDetails } from '@/entities/event'
 import { districts, eventTypes as types, organizers } from './dictionaries'
 import { CITY_CENTER as CENTER } from '@/shared/config/map'
 import { createOffset, createRandom } from '../lib/random'
+import { createVolunteerHistory } from './volunteerHistory'
 
 const randomOffset = createOffset(createRandom(42))
 
@@ -30,7 +31,7 @@ export const pointsByType: Record<string, number> = {
 
 const day = 24 * 60 * 60 * 1000
 
-export const events: EventDetails[] = titles.map((title, i) => {
+export const upcomingEvents: EventDetails[] = titles.map((title, i) => {
   const type = types[i % types.length]
   const startsAt = new Date(Date.now() + (i + 1) * day)
   startsAt.setHours(10 + (i % 4) * 2, 0, 0, 0)
@@ -69,6 +70,13 @@ export const events: EventDetails[] = titles.map((title, i) => {
     organizerContacts: 't.me/eco_example',
   }
 })
+
+export const volunteerHistory = createVolunteerHistory(upcomingEvents)
+
+export const events: EventDetails[] = [
+  ...upcomingEvents,
+  ...volunteerHistory.map(({ event }) => event),
+]
 
 export const toSummary = ({
   description,

@@ -1,12 +1,12 @@
 import type { Application } from '@/entities/application'
-import { events } from './events'
+import { upcomingEvents, volunteerHistory } from './events'
 import { users } from './users'
 
 const volunteers = users.filter((user) => user.role === 'volunteer')
 const now = Date.now()
 const MINUTE = 60_000
 
-export const applications: Application[] = events.flatMap((event) => {
+const upcomingApplications: Application[] = upcomingEvents.flatMap((event) => {
   const latestSubmission = Math.min(now, Date.parse(event.registrationEndsAt))
 
   return Array.from({ length: event.registeredCount }, (_, index) => {
@@ -31,3 +31,8 @@ export const applications: Application[] = events.flatMap((event) => {
     }
   })
 })
+
+export const applications: Application[] = [
+  ...upcomingApplications,
+  ...volunteerHistory.map(({ application }) => application),
+]
