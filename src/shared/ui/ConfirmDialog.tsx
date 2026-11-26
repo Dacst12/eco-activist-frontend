@@ -8,6 +8,7 @@ type Props = {
   title: string
   description: string
   confirmLabel: string
+  confirmVariant?: 'primary' | 'danger'
   backLabel: string
   pending: boolean
   error?: ReactNode
@@ -20,6 +21,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  confirmVariant = 'danger',
   backLabel,
   pending,
   error,
@@ -76,10 +78,9 @@ export function ConfirmDialog({
           </Button>
 
           <Button
-            variant="danger"
+            variant={confirmVariant}
             disabled={pending}
             onClick={onConfirm}
-            className="flex-1"
           >
             {pending ? 'Подождите…' : confirmLabel}
           </Button>
