@@ -5,6 +5,7 @@ import type {
   ApplicationList,
   ApplicationStatus,
   AttendanceResult,
+  VolunteerQr,
 } from '@/entities/application'
 import type { EventDetails } from '@/entities/event'
 import type { UserRole } from '@/entities/user'
@@ -49,6 +50,8 @@ const beforeStart = (event: EventDetails, now: number) =>
 
 const isOpen = (event: EventDetails, now: number) =>
   beforeStart(event, now) && now < Date.parse(event.registrationEndsAt)
+
+const qrTokens = new Map<string, string>()
 
 let nextId = 1
 
@@ -342,4 +345,54 @@ export const applicationHandlers = [
       }
     )
   ),
+  http.get('*/api/events/:eventId/application/qr', ({ params, request }) => {
+    const user = currentUser(request, 'volunteer')
+    if (user instanceof Response) return user
+
+    const event = publicEvent(params.eventId)
+    if (!event) return notFound()
+
+    const now = Date.now()
+    const row = syncApplications(event, now).find(
+      (item) => item.volunteer.id === user.id
+    )
+
+    if (row?.status !== 'confirmed') {
+      return problem(
+        403,
+        'QR-код доступен после подтверждения заявки',
+        'not_confirmed'
+      )
+    }
+
+    if (row.attendedAt) {
+      return problem(409, 'Ваше посещение уже отмечено', 'already_marked')
+    }
+
+    const phase = attendanceWindow(event, now)
+    if (phase === 'closed' || phase === 'unavailable') {
+      return problem(
+        409,
+        'Отметка посещения недоступна',
+        'attendance_unavailable'
+      )
+    }
+
+    const registration = `${row.id}:${row.createdAt}`
+    const token = qrTokens.get(registration) ?? crypto.randomUUID()
+    qrTokens.set(registration, token)
+
+    return HttpResponse.json(
+      {
+        token,
+        volunteerName: user.name,
+        event: {
+          title: event.title,
+          startsAt: event.startsAt,
+          endsAt: event.endsAt,
+        },
+      } satisfies VolunteerQr,
+      { headers: { 'Cache-Control': 'private, no-store' } }
+    )
+  }),
 ]

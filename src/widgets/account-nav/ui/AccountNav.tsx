@@ -7,8 +7,9 @@ import { routes } from '@/shared/config/routes'
 export function AccountNav() {
   const path = usePathname()
   const active = path === routes.myEvents
+  const qr = /^\/account\/events\/[^/]+\/qr\/?$/.test(path)
 
-  if (!active && path !== routes.myEventsHistory) return null
+  if (!active && path !== routes.myEventsHistory && !qr) return null
 
   return (
     <nav
@@ -22,12 +23,14 @@ export function AccountNav() {
         ← В кабинет
       </Link>
 
-      <Link
-        href={active ? routes.myEventsHistory : routes.myEvents}
-        className="inline-flex min-h-11 items-center hover:underline"
-      >
-        {active ? 'История мероприятий' : 'Активные мероприятия'} →
-      </Link>
+      {!qr && (
+        <Link
+          href={active ? routes.myEventsHistory : routes.myEvents}
+          className="inline-flex min-h-11 items-center hover:underline"
+        >
+          {active ? 'История мероприятий' : 'Активные мероприятия'} →
+        </Link>
+      )}
     </nav>
   )
 }

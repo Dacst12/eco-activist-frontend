@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { MyEventItem } from '@/entities/application'
+import { canShowQr, type MyEventItem } from '@/entities/application'
 import {
   ApplicationStatusBlock,
   CancelParticipation,
@@ -10,8 +10,9 @@ import {
   formatEventDate,
   toCityDateKey,
 } from '@/shared/lib/date'
-import { Badge } from '@/shared/ui'
+import { Badge, buttonClass } from '@/shared/ui'
 import { useSession } from '@/entities/user'
+import { volunteerEventRoutes } from '@/shared/config/routes'
 
 type Props = {
   item: MyEventItem
@@ -71,19 +72,30 @@ export function ActiveEventCard({ item, asOf }: Props) {
         registrationEndsAt={event.registrationEndsAt}
       />
 
-      {!started &&
-        user?.role === 'volunteer' &&
-        event.status === 'published' &&
-        (application.status === 'pending' ||
-          application.status === 'confirmed') && (
-          <CancelParticipation
-            key={application.id}
-            eventId={event.id}
-            userId={user.id}
-            title={event.title}
-            className="w-full sm:w-auto"
-          />
+      <div className="flex gap-2">
+        {canShowQr(item, asOf) && (
+          <Link
+            href={volunteerEventRoutes.qr(event.id)}
+            className={buttonClass('primary', 'w-full sm:w-auto')}
+          >
+            Показать QR
+          </Link>
         )}
+
+        {!started &&
+          user?.role === 'volunteer' &&
+          event.status === 'published' &&
+          (application.status === 'pending' ||
+            application.status === 'confirmed') && (
+            <CancelParticipation
+              key={application.id}
+              eventId={event.id}
+              userId={user.id}
+              title={event.title}
+              className="w-full sm:w-auto"
+            />
+          )}
+      </div>
     </article>
   )
 }

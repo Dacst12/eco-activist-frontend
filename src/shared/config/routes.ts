@@ -21,3 +21,7 @@ export const organizerEventRoutes = {
   preview: (id: string) => `/organizer/events/${id}/preview` as Route,
   cancel: (id: string) => `/organizer/events/${id}/cancel` as Route,
 }
+
+export const volunteerEventRoutes = {
+  qr: (id: string) => `/account/events/${encodeURIComponent(id)}/qr` as const,
+}

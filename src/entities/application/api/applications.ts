@@ -6,6 +6,7 @@ import type {
 } from '../model/types'
 import { MyEventsPage, MyEventsParams } from '../model/myEvents'
 import { AttendanceResult } from '../model/attendance'
+import { VolunteerQr } from '../model/qr'
 
 const eventPath = (eventId: string) => `/events/${encodeURIComponent(eventId)}`
 
@@ -29,6 +30,11 @@ export const applicationsApi = {
   cancel: (eventId: string) =>
     api
       .post<Application>(`${eventPath(eventId)}/application/cancel`)
+      .then((r) => r.data),
+
+  qr: (eventId: string) =>
+    api
+      .get<VolunteerQr>(`${eventPath(eventId)}/application/qr`)
       .then((r) => r.data),
 }
 

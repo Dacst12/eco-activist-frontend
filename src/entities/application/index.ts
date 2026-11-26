@@ -28,3 +28,6 @@ export {
   attendanceWindow,
 } from './model/attendance'
 export type { AttendanceStatus, AttendanceResult } from './model/attendance'
+export { canShowQr } from './model/qr'
+export type { VolunteerQr } from './model/qr'
+export { useVolunteerQr } from './api/queries'

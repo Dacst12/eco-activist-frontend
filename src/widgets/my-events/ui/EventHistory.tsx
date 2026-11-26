@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import {
   applicationStatusConfig,
+  canShowQr,
   type MyEventItem,
 } from '@/entities/application'
 import {
@@ -9,6 +10,7 @@ import {
   LOCALE,
 } from '@/shared/config/locale'
 import { Badge } from '@/shared/ui'
+import { volunteerEventRoutes } from '@/shared/config/routes'
 
 const eventDate = new Intl.DateTimeFormat(LOCALE, {
   day: 'numeric',
@@ -19,7 +21,13 @@ const eventDate = new Intl.DateTimeFormat(LOCALE, {
   timeZone: CITY_TIMEZONE,
 })
 
-export function EventHistory({ items }: { items: MyEventItem[] }) {
+export function EventHistory({
+  items,
+  asOf,
+}: {
+  items: MyEventItem[]
+  asOf: number
+}) {
   return (
     <div className="md:border-line md:rounded-control md:overflow-hidden md:border">
       <table className="block w-full text-left md:table md:border-collapse">
@@ -72,6 +80,15 @@ export function EventHistory({ items }: { items: MyEventItem[] }) {
 
                 <td className="md:px-4 md:py-3">
                   <Badge tone={status.tone}>{status.label}</Badge>
+
+                  {canShowQr({ event, application }, asOf) && (
+                    <Link
+                      href={volunteerEventRoutes.qr(event.id)}
+                      className="text-primary mt-2 block underline"
+                    >
+                      Показать QR
+                    </Link>
+                  )}
                 </td>
               </tr>
             )

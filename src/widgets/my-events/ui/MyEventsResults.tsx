@@ -63,7 +63,7 @@ export function MyEventsResults({
           ))}
         </ul>
       ) : (
-        <EventHistory items={preview ? items.slice(0, 3) : items} />
+        <EventHistory asOf={asOf} items={preview ? items.slice(0, 3) : items} />
       )}
 
       {!preview && pages > 1 && (
