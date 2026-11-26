@@ -5,6 +5,7 @@ import type {
   ApplicationListParams,
 } from '../model/types'
 import { MyEventsPage, MyEventsParams } from '../model/myEvents'
+import { AttendanceResult } from '../model/attendance'
 
 const eventPath = (eventId: string) => `/events/${encodeURIComponent(eventId)}`
 
@@ -55,6 +56,13 @@ export const organizerApplicationsApi = {
     api
       .post<Application>(
         `${organizerPath(eventId)}/${encodeURIComponent(id)}/remove`
+      )
+      .then((r) => r.data),
+
+  markPresent: (eventId: string, id: string) =>
+    api
+      .put<AttendanceResult>(
+        `${organizerPath(eventId)}/${encodeURIComponent(id)}/attendance`
       )
       .then((r) => r.data),
 }

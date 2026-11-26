@@ -22,3 +22,5 @@ export {
 } from './api/queries'
 export { applicationsApi, organizerApplicationsApi } from './api/applications'
 export { useOrganizerApplications } from './api/organizersQueries'
+export { attendanceWindow, attendanceStatus } from './model/attendance'
+export type { AttendanceStatus, AttendanceResult } from './model/attendance'

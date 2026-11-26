@@ -1,9 +1,10 @@
 import { http, HttpResponse } from 'msw'
-import { applicationStatuses } from '@/entities/application'
+import { applicationStatuses, attendanceWindow } from '@/entities/application'
 import type {
   Application,
   ApplicationList,
   ApplicationStatus,
+  AttendanceResult,
 } from '@/entities/application'
 import type { EventDetails } from '@/entities/event'
 import type { UserRole } from '@/entities/user'
@@ -226,6 +227,60 @@ export const applicationHandlers = [
         },
         registrationEndsAt: event.registrationEndsAt,
       } satisfies ApplicationList)
+    }
+  ),
+  http.put(
+    '*/api/organizer/events/:eventId/applications/:id/attendance',
+    ({ request, params }) => {
+      const user = currentUser(request, 'organizer')
+      if (user instanceof Response) return user
+
+      const event = events.find(
+        (item) => item.id === params.eventId && item.organizer.id === user.id
+      )
+      if (!event) return notFound()
+
+      const now = Date.now()
+      const row = syncApplications(event, now).find(
+        (item) => item.id === params.id
+      )
+      if (!row) return notFound()
+
+      const window = attendanceWindow(event, now)
+
+      if (window === 'unavailable') {
+        return problem(409, 'Мероприятие недоступно', 'event_unavailable')
+      }
+
+      if (row.status !== 'confirmed') {
+        return problem(409, 'Заявка не подтверждена', 'not_confirmed')
+      }
+
+      if (row.attendedAt) {
+        return HttpResponse.json<AttendanceResult>({
+          result: 'already_marked',
+          attendedAt: row.attendedAt,
+        })
+      }
+
+      if (window === 'upcoming') {
+        return problem(
+          409,
+          'Мероприятие ещё не началось',
+          'attendance_not_open'
+        )
+      }
+
+      if (window === 'closed') {
+        return problem(409, 'Срок отметки истёк', 'attendance_closed')
+      }
+
+      row.attendedAt = new Date(now).toISOString()
+
+      return HttpResponse.json<AttendanceResult>({
+        result: 'marked',
+        attendedAt: row.attendedAt,
+      })
     }
   ),
 

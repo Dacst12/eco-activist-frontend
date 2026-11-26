@@ -10,7 +10,7 @@ export type MyEventsParams = {
 }
 
 export type MyEventItem = {
-  application: Pick<Application, 'id' | 'status' | 'updatedAt'>
+  application: Pick<Application, 'id' | 'status' | 'updatedAt' | 'attendedAt'>
   event: Pick<
     EventDetails,
     | 'id'

@@ -73,8 +73,20 @@ export const upcomingEvents: EventDetails[] = titles.map((title, i) => {
 
 export const volunteerHistory = createVolunteerHistory(upcomingEvents)
 
+const now = Date.now()
+const hour = 3_600_000
+
+export const attendanceEvent: EventDetails = {
+  ...upcomingEvents[0],
+  id: 'attendance-open',
+  startsAt: new Date(now - hour).toISOString(),
+  endsAt: new Date(now + hour).toISOString(),
+  registrationEndsAt: new Date(now - 25 * hour).toISOString(),
+}
+
 export const events: EventDetails[] = [
   ...upcomingEvents,
+  attendanceEvent,
   ...volunteerHistory.map(({ event }) => event),
 ]
 

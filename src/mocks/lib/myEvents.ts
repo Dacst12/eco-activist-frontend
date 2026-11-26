@@ -22,7 +22,7 @@ export function listMyEvents(
 
     syncApplications(event, now)
 
-    const { id, status, updatedAt } = application
+    const { id, status, updatedAt, attendedAt } = application
     const participating = status === 'pending' || status === 'confirmed'
     const endsAt = Date.parse(event.endsAt)
     const active = participating && event.status === 'published' && now < endsAt
@@ -37,7 +37,7 @@ export function listMyEvents(
     rows.push({
       order,
       item: {
-        application: { id, status, updatedAt },
+        application: { id, status, updatedAt, attendedAt },
         event: {
           id: event.id,
           title: event.title,

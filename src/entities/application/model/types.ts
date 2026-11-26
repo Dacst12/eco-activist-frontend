@@ -19,6 +19,7 @@ export type Application = {
     contact: string
   }
   status: ApplicationStatus
+  attendedAt?: string
   createdAt: string
   updatedAt: string
 }

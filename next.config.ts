@@ -2,6 +2,10 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
+  allowedDevOrigins: (process.env.ALLOWED_DEV_ORIGINS ?? '')
+    .split(',')
+    .map((host) => host.trim())
+    .filter(Boolean),
   turbopack: {
     rules: {
       '*.css': {
