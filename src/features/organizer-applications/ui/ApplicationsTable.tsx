@@ -1,19 +1,32 @@
 import {
   applicationStatusConfig,
+  attendanceWindow,
   type Application,
 } from '@/entities/application'
 import { formatDateTime } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui'
 import { ReviewApplicationActions } from './ReviewApplicationActions'
 import { RemoveParticipantAction } from './RemoveParticipantAction'
+import { EventDetails } from '@/entities/event'
+import { ParticipantAttendance } from './ParticipantAttendance'
 
 type Props = {
   items: Application[]
+  event: EventDetails
+  now: number
   reviewOpen: boolean
   removalOpen: boolean
 }
 
-export function ApplicationsTable({ items, reviewOpen, removalOpen }: Props) {
+export function ApplicationsTable({
+  items,
+  event,
+  now,
+  reviewOpen,
+  removalOpen,
+}: Props) {
+  const phase = attendanceWindow(event, now)
+  const showAttendance = phase === 'open' || phase === 'closed'
   return (
     <div className="lg:border-line lg:rounded-control lg:overflow-hidden lg:border">
       <table className="block w-full text-left lg:table lg:border-collapse">
@@ -21,13 +34,17 @@ export function ApplicationsTable({ items, reviewOpen, removalOpen }: Props) {
 
         <thead className="bg-success-soft hidden lg:table-header-group">
           <tr className="divide-line divide-x">
-            {['Волонтёр', 'Контакт', 'Время подачи', 'Статус', 'Действия'].map(
-              (label) => (
-                <th key={label} scope="col" className="px-4 py-3 font-semibold">
-                  {label}
-                </th>
-              )
-            )}
+            {[
+              'Волонтёр',
+              'Контакт',
+              'Время подачи',
+              'Статус заявки',
+              showAttendance ? 'Посещение' : 'Действия',
+            ].map((label) => (
+              <th key={label} scope="col" className="px-4 py-3 font-semibold">
+                {label}
+              </th>
+            ))}
           </tr>
         </thead>
 
@@ -65,7 +82,13 @@ export function ApplicationsTable({ items, reviewOpen, removalOpen }: Props) {
               </td>
 
               <td className="border-line border-t pt-3 lg:border-t-0 lg:px-4 lg:py-3">
-                {item.status === 'pending' ? (
+                {showAttendance ? (
+                  <ParticipantAttendance
+                    application={item}
+                    event={event}
+                    now={now}
+                  />
+                ) : item.status === 'pending' ? (
                   reviewOpen ? (
                     <ReviewApplicationActions application={item} />
                   ) : (

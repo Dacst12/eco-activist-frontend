@@ -1,4 +1,4 @@
-import { OrganizerApplications } from '@/features/organizer-applications/ui/OrganizerApplications'
+import { OrganizerApplications } from '@/widgets/organizer-applications'
 
 export default async function ApplicationsPage({
   params,
@@ -7,7 +7,7 @@ export default async function ApplicationsPage({
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-5 px-4 py-8">
-      <h1 className="text-title font-semibold">Заявки на мероприятие</h1>
+      <h1 className="text-title font-semibold">Заявки и участники</h1>
       <OrganizerApplications key={id} eventId={id} />
     </main>
   )

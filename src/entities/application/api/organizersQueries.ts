@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { organizerApplicationsApi } from './applications'
 import type { ApplicationListParams } from '../model/types'
 
@@ -9,6 +9,7 @@ export function useOrganizerApplications(
   params: ApplicationListParams
 ) {
   return useQuery({
+    placeholderData: keepPreviousData,
     queryKey: ['organizer-applications', eventId, params],
     queryFn: () => organizerApplicationsApi.list(eventId, params),
     retry: false,

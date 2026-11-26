@@ -25,6 +25,7 @@ export type Application = {
 }
 
 export type ApplicationListParams = {
+  search?: string
   status?: ApplicationStatus
   page?: number
   pageSize?: number

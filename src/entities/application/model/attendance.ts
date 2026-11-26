@@ -18,7 +18,7 @@ export function attendanceWindow(event: EventTime, now: number) {
 
   if (now < Date.parse(event.startsAt)) return 'upcoming'
 
-  const closesAt = Date.parse(event.endsAt) + 48 * 60 * 60 * 1000
+  const closesAt = attendanceClosesAt(event.endsAt)
   return now < closesAt ? 'open' : 'closed'
 }
 
@@ -35,4 +35,8 @@ export function attendanceStatus(
 
   if (application.attendedAt) return 'present'
   return window === 'closed' ? 'absent' : 'unmarked'
+}
+
+export function attendanceClosesAt(endsAt: string) {
+  return Date.parse(endsAt) + 48 * 60 * 60 * 1000
 }

@@ -183,6 +183,7 @@ export const applicationHandlers = [
 
       const query = new URL(request.url).searchParams
       const status = query.get('status')
+      const search = query.get('search')?.trim().toLocaleLowerCase('ru') ?? ''
       const page = Number(query.get('page') ?? 1)
       const pageSize = Number(query.get('pageSize') ?? 20)
 
@@ -207,7 +208,11 @@ export const applicationHandlers = [
       ) as ApplicationList['statusCounts']
 
       const filtered = rows
-        .filter((item) => !status || item.status === status)
+        .filter(
+          (item) =>
+            (!status || item.status === status) &&
+            item.volunteer.name.toLocaleLowerCase('ru').includes(search)
+        )
         .sort(
           (a, b) =>
             a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id)

@@ -4,6 +4,7 @@ import {
   type ApplicationList,
   type ApplicationStatus,
 } from '@/entities/application'
+import { Select } from '@/shared/ui'
 
 type Props = {
   status?: ApplicationStatus
@@ -17,26 +18,26 @@ export function ApplicationStatusFilters({
   onChange,
 }: Props) {
   const all = Object.values(statusCounts).reduce((sum, count) => sum + count, 0)
-  const filters = [undefined, ...applicationStatuses]
 
   return (
-    <div
-      role="group"
+    <Select
       aria-label="Статус заявки"
-      className="flex flex-wrap gap-2"
+      className="h-11 w-full min-w-0 py-0"
+      value={status ?? ''}
+      onChange={(e) => {
+        const selected = applicationStatuses.find(
+          (value) => value === e.target.value
+        )
+        onChange(selected)
+      }}
     >
-      {filters.map((value) => (
-        <button
-          type="button"
-          key={value ?? 'all'}
-          aria-pressed={value === status}
-          className="rounded-control bg-surface aria-pressed:bg-primary aria-pressed:text-primary-foreground px-3 py-2"
-          onClick={() => onChange(value)}
-        >
-          {value ? applicationStatusConfig[value].label : 'Все'} (
-          {value ? statusCounts[value] : all})
-        </button>
+      <option value="">Все статусы ({all})</option>
+
+      {applicationStatuses.map((value) => (
+        <option key={value} value={value}>
+          {applicationStatusConfig[value].label} ({statusCounts[value]})
+        </option>
       ))}
-    </div>
+    </Select>
   )
 }
