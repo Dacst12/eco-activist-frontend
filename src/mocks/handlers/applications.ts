@@ -53,6 +53,37 @@ const isOpen = (event: EventDetails, now: number) =>
 
 const qrTokens = new Map<string, string>()
 
+function markAttendance(
+  event: EventDetails,
+  row: Application,
+  now: number
+): AttendanceResult | Response {
+  const phase = attendanceWindow(event, now)
+
+  if (phase === 'unavailable') {
+    return problem(409, 'Мероприятие недоступно', 'event_unavailable')
+  }
+
+  if (row.status !== 'confirmed') {
+    return problem(409, 'Заявка не подтверждена', 'not_confirmed')
+  }
+
+  if (row.attendedAt) {
+    return { result: 'already_marked', attendedAt: row.attendedAt }
+  }
+
+  if (phase === 'upcoming') {
+    return problem(409, 'Мероприятие ещё не началось', 'attendance_not_open')
+  }
+
+  if (phase === 'closed') {
+    return problem(409, 'Срок отметки истёк', 'attendance_closed')
+  }
+
+  row.attendedAt = new Date(now).toISOString()
+  return { result: 'marked', attendedAt: row.attendedAt }
+}
+
 let nextId = 1
 
 export const applicationHandlers = [
@@ -254,41 +285,8 @@ export const applicationHandlers = [
       )
       if (!row) return notFound()
 
-      const window = attendanceWindow(event, now)
-
-      if (window === 'unavailable') {
-        return problem(409, 'Мероприятие недоступно', 'event_unavailable')
-      }
-
-      if (row.status !== 'confirmed') {
-        return problem(409, 'Заявка не подтверждена', 'not_confirmed')
-      }
-
-      if (row.attendedAt) {
-        return HttpResponse.json<AttendanceResult>({
-          result: 'already_marked',
-          attendedAt: row.attendedAt,
-        })
-      }
-
-      if (window === 'upcoming') {
-        return problem(
-          409,
-          'Мероприятие ещё не началось',
-          'attendance_not_open'
-        )
-      }
-
-      if (window === 'closed') {
-        return problem(409, 'Срок отметки истёк', 'attendance_closed')
-      }
-
-      row.attendedAt = new Date(now).toISOString()
-
-      return HttpResponse.json<AttendanceResult>({
-        result: 'marked',
-        attendedAt: row.attendedAt,
-      })
+      const result = markAttendance(event, row, now)
+      return result instanceof Response ? result : HttpResponse.json(result)
     }
   ),
 
@@ -395,4 +393,46 @@ export const applicationHandlers = [
       { headers: { 'Cache-Control': 'private, no-store' } }
     )
   }),
+
+  http.post(
+    '*/api/organizer/events/:eventId/attendance/scan',
+    async ({ request, params }) => {
+      const user = currentUser(request, 'organizer')
+      if (user instanceof Response) return user
+
+      const event = events.find(
+        (item) => item.id === params.eventId && item.organizer.id === user.id
+      )
+      if (!event) return notFound()
+
+      const body: unknown = await request.json().catch(() => null)
+      const token =
+        body && typeof body === 'object' && 'token' in body ? body.token : null
+
+      if (typeof token !== 'string' || !token) {
+        return problem(400, 'Код недействителен', 'invalid_qr')
+      }
+
+      const row = applications.find(
+        (item) => qrTokens.get(`${item.id}:${item.createdAt}`) === token
+      )
+      if (!row) return problem(400, 'Код недействителен', 'invalid_qr')
+
+      if (row.eventId !== event.id) {
+        return problem(409, 'Код другого мероприятия', 'wrong_event')
+      }
+
+      const now = Date.now()
+      syncApplications(event, now)
+
+      const result = markAttendance(event, row, now)
+      if (result instanceof Response) return result
+
+      return HttpResponse.json({
+        ...result,
+        volunteerName: row.volunteer.name,
+        volunteerId: row.volunteer.id,
+      })
+    }
+  ),
 ]

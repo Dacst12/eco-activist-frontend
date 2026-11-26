@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import {
+  attendanceWindow,
   useOrganizerApplications,
   type ApplicationStatus,
 } from '@/entities/application'
@@ -13,6 +14,7 @@ import {
   ApplicationsPagination,
   ApplicationsSummary,
   ApplicationsTable,
+  AttendanceScanner,
   useApplicationsTiming,
 } from '@/features/organizer-applications'
 
@@ -89,6 +91,10 @@ export function OrganizerApplications({ eventId }: { eventId: string }) {
         now={now}
         reviewOpen={reviewOpen}
       />
+
+      {attendanceWindow(event.data, now) === 'open' && (
+        <AttendanceScanner eventId={eventId} />
+      )}
 
       <ApplicationListControls key="controls" {...controlsProps} />
 

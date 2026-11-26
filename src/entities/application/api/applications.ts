@@ -71,4 +71,12 @@ export const organizerApplicationsApi = {
         `${organizerPath(eventId)}/${encodeURIComponent(id)}/attendance`
       )
       .then((r) => r.data),
+
+  scan: (eventId: string, token: string) =>
+    api
+      .post<AttendanceResult & { volunteerName: string; volunteerId: string }>(
+        `/organizer/events/${encodeURIComponent(eventId)}/attendance/scan`,
+        { token }
+      )
+      .then((r) => r.data),
 }
