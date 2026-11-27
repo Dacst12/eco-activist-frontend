@@ -12,6 +12,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: 'Эко Активист',
   description: 'Экологические мероприятия рядом с вами',
+  referrer: 'strict-origin',
 }
 
 export default function RootLayout({

@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     .filter(Boolean),
   turbopack: {
     rules: {
-      '*.css': {
+      'globals.css': {
         loaders: ['@tailwindcss/turbopack'],
         as: '*.css',
       },

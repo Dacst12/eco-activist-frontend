@@ -1,10 +1,14 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { getErrorMessage } from '@/shared/api'
+import { useCallback, useRef, useState } from 'react'
 import { Button } from '@/shared/ui'
 import { useScanAttendance } from '../model/useScanAttendance'
 import { QrCamera } from './QrCamera'
+import { getScanErrorFeedback } from '../model/getScanErrorFeedback'
+import { formatDateTime } from '@/shared/lib/date'
+import { ScanResultCard } from './ScanResultCard'
+import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
+import { ScanPreview } from './ScanPreview'
 
 type Props = {
   eventId: string
@@ -15,6 +19,22 @@ export function AttendanceScanner({ eventId, title }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
   const [open, setOpen] = useState(false)
   const scan = useScanAttendance(eventId)
+
+  const [frame, setFrame] = useState<ImageData | null>(null)
+  const { mutate } = scan
+
+  const onCode = useCallback(
+    (token: string, captured: ImageData) => {
+      setFrame(captured)
+      mutate(token)
+    },
+    [mutate]
+  )
+
+  function resetScan() {
+    setFrame(null)
+    scan.reset()
+  }
 
   function close() {
     dialog.current?.close()
@@ -37,7 +57,7 @@ export function AttendanceScanner({ eventId, title }: Props) {
         aria-label={`Сканирование QR · ${title}`}
         onClose={() => {
           setOpen(false)
-          scan.reset()
+          resetScan()
         }}
         className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden bg-black p-0 text-white"
       >
@@ -51,31 +71,49 @@ export function AttendanceScanner({ eventId, title }: Props) {
               </button>
             </header>
 
-            <div className="relative grid min-h-0 flex-1 place-items-center overflow-hidden">
-              {scan.isIdle && <QrCamera onCode={scan.mutate} />}
+            <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+              {!frame && scan.isIdle && <QrCamera onCode={onCode} />}
 
-              {scan.isPending && <p role="status">Проверяем код…</p>}
+              {scan.isPending && (
+                <ScanResultCard tone="neutral" title="Проверяем код…" />
+              )}
 
               {scan.isError && (
-                <p role="alert" className="p-4">
-                  {getErrorMessage(scan.error)}
-                </p>
+                <ScanResultCard alert {...getScanErrorFeedback(scan.error)} />
               )}
 
               {scan.data && (
-                <p role="status" className="p-4">
-                  {scan.data.volunteerName} ·{' '}
-                  {scan.data.result === 'marked'
-                    ? 'Посещение отмечено'
-                    : 'Уже отмечено'}
-                </p>
+                <ScanResultCard
+                  tone={scan.data.result === 'marked' ? 'success' : 'neutral'}
+                  title={
+                    scan.data.result === 'marked'
+                      ? 'Посещение отмечено'
+                      : 'Уже отмечено'
+                  }
+                  message={`${scan.data.volunteerName} · ${formatDateTime(scan.data.attendedAt)} (${CITY_TIMEZONE_LABEL})`}
+                />
+              )}
+
+              {frame && (
+                <ScanPreview
+                  frame={frame}
+                  phase={
+                    scan.isError
+                      ? 'error'
+                      : scan.isSuccess
+                        ? 'success'
+                        : 'pending'
+                  }
+                />
               )}
             </div>
 
             <footer className="flex flex-wrap justify-center gap-3 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-              {(scan.isSuccess || scan.isError) && (
-                <Button onClick={() => scan.reset()}>Сканировать ещё</Button>
-              )}
+              <Button onClick={resetScan}>
+                {scan.isSuccess
+                  ? 'Сканировать следующего'
+                  : 'Сканировать снова'}
+              </Button>
 
               <Button variant="secondary" onClick={close}>
                 К ручной отметке

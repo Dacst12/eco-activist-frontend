@@ -1,12 +1,12 @@
 import {
+  AttendanceBadge,
   attendanceStatus,
   attendanceWindow,
   type Application,
-  type AttendanceStatus,
 } from '@/entities/application'
 import type { EventDetails } from '@/entities/event'
 import { getErrorMessage } from '@/shared/api'
-import { Badge, BadgeTone, ConfirmDialog } from '@/shared/ui'
+import { ConfirmDialog } from '@/shared/ui'
 import { useMarkPresent } from '../model/useMarkPresent'
 
 type Props = {
@@ -14,12 +14,6 @@ type Props = {
   event: EventDetails
   now: number
 }
-
-const attendanceBadge = {
-  unmarked: { label: 'Не отмечено', tone: 'neutral' },
-  present: { label: 'Присутствовал', tone: 'success' },
-  absent: { label: 'Отсутствовал', tone: 'warning' },
-} satisfies Record<AttendanceStatus, { label: string; tone: BadgeTone }>
 
 export function ParticipantAttendance({ application, event, now }: Props) {
   const mark = useMarkPresent(application)
@@ -44,14 +38,9 @@ export function ParticipantAttendance({ application, event, now }: Props) {
     )
   }
 
-  const { label, tone } = attendanceBadge[status]
-
   return (
     <div role="status">
-      <Badge tone={tone} className="items-center gap-1.5 rounded-full">
-        <span className="sr-only">Посещение: </span>
-        {label}
-      </Badge>
+      <AttendanceBadge status={status} />
     </div>
   )
 }

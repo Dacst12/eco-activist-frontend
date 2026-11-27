@@ -1,7 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { type MyEventsSection, useMyEvents } from '@/entities/application'
+import {
+  attendanceClosesAt,
+  type MyEventsSection,
+  useMyEvents,
+} from '@/entities/application'
 import { useSession } from '@/entities/user'
 import { getErrorMessage } from '@/shared/api'
 import { Button } from '@/shared/ui'
@@ -19,21 +23,30 @@ export function MyEvents({ section, preview = false }: Props) {
   const { data, dataUpdatedAt, refetch } = list
 
   useEffect(() => {
-    if (section !== 'active' || !data?.items.length) return
+    if (!data?.items.length) return
 
-    const times = data.items.flatMap(({ event, application }) => [
-      Date.parse(event.startsAt),
-      Date.parse(event.endsAt),
-      ...(application.status === 'pending'
-        ? [Date.parse(event.registrationEndsAt)]
-        : []),
-    ])
+    const times = data.items.flatMap(({ event, application }) => {
+      if (section === 'history') {
+        return application.status === 'confirmed' && !application.attendedAt
+          ? [attendanceClosesAt(event.endsAt)]
+          : []
+      }
+
+      return [
+        Date.parse(event.startsAt),
+        Date.parse(event.endsAt),
+        ...(application.status === 'pending'
+          ? [Date.parse(event.registrationEndsAt)]
+          : []),
+      ]
+    })
 
     const next = Math.min(...times.filter((time) => time > dataUpdatedAt))
     if (!Number.isFinite(next)) return
 
     const delay = Math.min(Math.max(0, next - Date.now()), 2_147_483_647)
     const timer = window.setTimeout(() => void refetch(), delay)
+
     return () => window.clearTimeout(timer)
   }, [section, data, dataUpdatedAt, refetch])
 

@@ -3,7 +3,7 @@ import { useEffect, useState, type RefObject } from 'react'
 export function useQrDecoder(
   videoRef: RefObject<HTMLVideoElement | null>,
   frameRef: RefObject<HTMLDivElement | null>,
-  onCode: (code: string) => void
+  onCode: (code: string, frame: ImageData) => void
 ) {
   const [state, setState] = useState<'reading' | 'done' | 'error'>('reading')
 
@@ -62,7 +62,7 @@ export function useQrDecoder(
 
               if (code) {
                 setState('done')
-                onCode(code.data)
+                onCode(code.data, frame)
                 return
               }
             }

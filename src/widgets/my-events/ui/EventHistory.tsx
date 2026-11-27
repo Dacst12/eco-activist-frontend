@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import {
   applicationStatusConfig,
+  AttendanceBadge,
+  attendanceStatus,
   canShowQr,
   type MyEventItem,
 } from '@/entities/application'
@@ -39,6 +41,7 @@ export function EventHistory({
               'Мероприятие',
               `Дата начала (${CITY_TIMEZONE_LABEL})`,
               'Заявка',
+              'Посещение',
             ].map((label) => (
               <th key={label} scope="col" className="px-4 py-3 font-medium">
                 {label}
@@ -50,6 +53,7 @@ export function EventHistory({
         <tbody className="grid gap-3 md:table-row-group">
           {items.map(({ event, application }) => {
             const status = applicationStatusConfig[application.status]
+            const visit = attendanceStatus(event, application, asOf)
 
             return (
               <tr
@@ -80,18 +84,26 @@ export function EventHistory({
 
                 <td className="md:px-4 md:py-3">
                   <Badge tone={status.tone}>{status.label}</Badge>
+                </td>
 
-                  {application.attendedAt ? (
-                    <Badge tone="success">Посещение отмечено</Badge>
+                <td className="md:px-4 md:py-3">
+                  <span className="text-muted block text-sm md:hidden">
+                    Посещение
+                  </span>
+
+                  {visit ? (
+                    <AttendanceBadge status={visit} />
                   ) : (
-                    canShowQr({ event, application }, asOf) && (
-                      <Link
-                        href={volunteerEventRoutes.qr(event.id)}
-                        className="text-primary mt-2 block underline"
-                      >
-                        Показать QR
-                      </Link>
-                    )
+                    <span aria-label="Не применимо">—</span>
+                  )}
+
+                  {canShowQr({ event, application }, asOf) && (
+                    <Link
+                      className="text-primary mt-2 block underline"
+                      href={volunteerEventRoutes.qr(event.id)}
+                    >
+                      Показать QR
+                    </Link>
                   )}
                 </td>
               </tr>

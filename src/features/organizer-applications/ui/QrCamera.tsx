@@ -1,8 +1,13 @@
 import { useRef } from 'react'
 import { useCameraStream } from '../model/useCameraStream'
 import { useQrDecoder } from '../model/useQrDecoder'
+import { ScanResultCard } from './ScanResultCard'
 
-export function QrCamera({ onCode }: { onCode: (code: string) => void }) {
+export function QrCamera({
+  onCode,
+}: {
+  onCode: (code: string, frame: ImageData) => void
+}) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
 
@@ -16,9 +21,12 @@ export function QrCamera({ onCode }: { onCode: (code: string) => void }) {
 
   if (error) {
     return (
-      <p role="alert" className="p-4">
-        {error}
-      </p>
+      <ScanResultCard
+        alert
+        tone="warning"
+        title={cameraError ? 'Камера недоступна' : 'Ошибка считывания'}
+        message={error}
+      />
     )
   }
 

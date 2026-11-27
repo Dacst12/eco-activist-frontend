@@ -1,0 +1,106 @@
+.stage {
+  position: relative;
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  place-items: center;
+  container-type: size;
+  --disc: rgb(15 23 42 / 78%);
+}
+
+.stage[data-phase='success'] {
+  --disc: var(--color-primary);
+}
+
+.stage[data-phase='error'] {
+  --disc: var(--color-danger);
+}
+
+.crop {
+  width: min(72vw, 88cqh, 22rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.crop canvas {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0.8);
+  transition: filter 220ms ease-out;
+}
+
+.stage[data-phase='pending'] canvas {
+  filter: blur(2px) brightness(0.7);
+}
+
+.indicator {
+  position: absolute;
+  width: min(4rem, 40cqh);
+  filter: drop-shadow(0 3px 10px rgb(0 0 0 / 35%));
+}
+
+.disc {
+  fill: var(--disc);
+  transition: fill 220ms ease-out;
+}
+
+.rotor {
+  transform-origin: 32px 32px;
+  animation: rotate 850ms linear infinite;
+}
+
+.stage:not([data-phase='pending']) .rotor {
+  animation-play-state: paused;
+}
+
+.ring,
+.mark {
+  stroke: white;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ring {
+  stroke-width: 3;
+  stroke-dasharray: 70 100;
+  transition:
+    stroke-dasharray 220ms ease-out,
+    opacity 220ms;
+}
+
+.stage:not([data-phase='pending']) .ring {
+  stroke-dasharray: 100 100;
+  opacity: 0.4;
+}
+
+.mark {
+  stroke-width: 4;
+  stroke-dasharray: 1;
+  animation: draw 260ms ease-out 80ms both;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage *,
+  .stage canvas {
+    animation: none;
+    transition: none;
+  }
+}
