@@ -32,6 +32,19 @@ export function useMyEvents(
     queryKey: ['my-events', userId, section, page],
     queryFn: () => applicationsApi.myEvents({ section, page, pageSize: 10 }),
     enabled: Boolean(userId),
+    refetchInterval: (query) => {
+      const now = Date.now()
+
+      const waitingForAttendance = query.state.data?.items.some(
+        ({ application, event }) =>
+          application.status === 'confirmed' &&
+          !application.attendedAt &&
+          Date.parse(event.startsAt) <= now &&
+          now < attendanceClosesAt(event.endsAt)
+      )
+
+      return waitingForAttendance ? 30_000 : false
+    },
   })
 }
 

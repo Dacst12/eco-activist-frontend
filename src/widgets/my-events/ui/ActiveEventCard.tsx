@@ -73,13 +73,17 @@ export function ActiveEventCard({ item, asOf }: Props) {
       />
 
       <div className="flex gap-2">
-        {canShowQr(item, asOf) && (
-          <Link
-            href={volunteerEventRoutes.qr(event.id)}
-            className={buttonClass('primary', 'w-full sm:w-auto')}
-          >
-            Показать QR
-          </Link>
+        {application.attendedAt ? (
+          <Badge tone="success">Посещение отмечено</Badge>
+        ) : (
+          canShowQr(item, asOf) && (
+            <Link
+              href={volunteerEventRoutes.qr(event.id)}
+              className={buttonClass('primary', 'w-full sm:w-auto')}
+            >
+              Показать QR
+            </Link>
+          )
         )}
 
         {!started &&

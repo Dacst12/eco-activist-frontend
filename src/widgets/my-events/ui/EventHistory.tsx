@@ -81,13 +81,17 @@ export function EventHistory({
                 <td className="md:px-4 md:py-3">
                   <Badge tone={status.tone}>{status.label}</Badge>
 
-                  {canShowQr({ event, application }, asOf) && (
-                    <Link
-                      href={volunteerEventRoutes.qr(event.id)}
-                      className="text-primary mt-2 block underline"
-                    >
-                      Показать QR
-                    </Link>
+                  {application.attendedAt ? (
+                    <Badge tone="success">Посещение отмечено</Badge>
+                  ) : (
+                    canShowQr({ event, application }, asOf) && (
+                      <Link
+                        href={volunteerEventRoutes.qr(event.id)}
+                        className="text-primary mt-2 block underline"
+                      >
+                        Показать QR
+                      </Link>
+                    )
                   )}
                 </td>
               </tr>

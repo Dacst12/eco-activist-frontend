@@ -1,62 +1,89 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { getErrorMessage } from '@/shared/api'
 import { Button } from '@/shared/ui'
 import { useScanAttendance } from '../model/useScanAttendance'
 import { QrCamera } from './QrCamera'
 
-export function AttendanceScanner({ eventId }: { eventId: string }) {
+type Props = {
+  eventId: string
+  title: string
+}
+
+export function AttendanceScanner({ eventId, title }: Props) {
+  const dialog = useRef<HTMLDialogElement>(null)
   const [open, setOpen] = useState(false)
   const scan = useScanAttendance(eventId)
 
-  if (!open) {
-    return (
-      <Button
-        onClick={() => setOpen(true)}
-        className="lg:bg-surface lg:text-primary lg:border-line lg:hover:bg-success-soft w-full lg:w-auto lg:border"
-      >
-        Сканировать QR
-      </Button>
-    )
+  function close() {
+    dialog.current?.close()
   }
 
   return (
-    <section
-      aria-label="Сканирование QR"
-      className="rounded-card bg-surface space-y-3 p-4"
-    >
-      {scan.isIdle && <QrCamera onCode={scan.mutate} />}
+    <>
+      <Button
+        className="w-full"
+        onClick={() => {
+          dialog.current?.showModal()
+          setOpen(true)
+        }}
+      >
+        Сканировать QR
+      </Button>
 
-      {scan.isPending && <p role="status">Проверяем код…</p>}
+      <dialog
+        ref={dialog}
+        aria-label={`Сканирование QR · ${title}`}
+        onClose={() => {
+          setOpen(false)
+          scan.reset()
+        }}
+        className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden bg-black p-0 text-white"
+      >
+        {open && (
+          <div className="flex h-full flex-col">
+            <header className="flex items-center justify-between gap-3 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
+              <h2 className="truncate font-semibold">{title}</h2>
 
-      {scan.isError && <p role="alert">{getErrorMessage(scan.error)}</p>}
+              <button type="button" onClick={close} className="min-h-11 px-2">
+                Закрыть
+              </button>
+            </header>
 
-      {scan.data && (
-        <p role="status">
-          {scan.data.volunteerName} ·{' '}
-          {scan.data.result === 'marked'
-            ? 'Посещение отмечено'
-            : 'Уже отмечено'}
-        </p>
-      )}
+            <div className="relative grid min-h-0 flex-1 place-items-center overflow-hidden">
+              {scan.isIdle && <QrCamera onCode={scan.mutate} />}
 
-      <div className="flex flex-wrap gap-2">
-        {(scan.isSuccess || scan.isError) && (
-          <Button onClick={() => scan.reset()}>Сканировать ещё</Button>
+              {scan.isPending && <p role="status">Проверяем код…</p>}
+
+              {scan.isError && (
+                <p role="alert" className="p-4">
+                  {getErrorMessage(scan.error)}
+                </p>
+              )}
+
+              {scan.data && (
+                <p role="status" className="p-4">
+                  {scan.data.volunteerName} ·{' '}
+                  {scan.data.result === 'marked'
+                    ? 'Посещение отмечено'
+                    : 'Уже отмечено'}
+                </p>
+              )}
+            </div>
+
+            <footer className="flex flex-wrap justify-center gap-3 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+              {(scan.isSuccess || scan.isError) && (
+                <Button onClick={() => scan.reset()}>Сканировать ещё</Button>
+              )}
+
+              <Button variant="secondary" onClick={close}>
+                К ручной отметке
+              </Button>
+            </footer>
+          </div>
         )}
-
-        <Button
-          variant="secondary"
-          disabled={scan.isPending}
-          onClick={() => {
-            setOpen(false)
-            scan.reset()
-          }}
-        >
-          К ручной отметке
-        </Button>
-      </div>
-    </section>
+      </dialog>
+    </>
   )
 }

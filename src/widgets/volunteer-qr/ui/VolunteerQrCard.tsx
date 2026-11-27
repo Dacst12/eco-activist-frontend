@@ -3,14 +3,22 @@
 import { QRCodeSVG } from 'qrcode.react'
 import { useVolunteerQr } from '@/entities/application'
 import { useSession } from '@/entities/user'
-import { getErrorMessage } from '@/shared/api'
+import { getErrorMessage, getProblem } from '@/shared/api'
 import { CITY_TIMEZONE_LABEL } from '@/shared/config/locale'
 import { formatDateTime } from '@/shared/lib/date'
-import { Button } from '@/shared/ui'
+import { Badge, Button } from '@/shared/ui'
 
 export function VolunteerQrCard({ eventId }: { eventId: string }) {
   const { data: user } = useSession()
   const qr = useVolunteerQr(eventId, user?.id)
+
+  if (qr.isError && getProblem(qr.error)?.code === 'already_marked') {
+    return (
+      <div role="status">
+        <Badge tone="success">Посещение отмечено</Badge>
+      </div>
+    )
+  }
 
   if (qr.isError) {
     return (

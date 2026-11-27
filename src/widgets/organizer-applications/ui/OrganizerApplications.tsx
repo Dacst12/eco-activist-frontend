@@ -16,9 +16,11 @@ import {
   ApplicationsTable,
   AttendanceScanner,
   useApplicationsTiming,
+  useTouchScanner,
 } from '@/features/organizer-applications'
 
 export function OrganizerApplications({ eventId }: { eventId: string }) {
+  const showScanner = useTouchScanner()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<ApplicationStatus>()
   const [page, setPage] = useState(1)
@@ -92,8 +94,8 @@ export function OrganizerApplications({ eventId }: { eventId: string }) {
         reviewOpen={reviewOpen}
       />
 
-      {attendanceWindow(event.data, now) === 'open' && (
-        <AttendanceScanner eventId={eventId} />
+      {showScanner && attendanceWindow(event.data, now) === 'open' && (
+        <AttendanceScanner eventId={eventId} title={event.data.title} />
       )}
 
       <ApplicationListControls key="controls" {...controlsProps} />
